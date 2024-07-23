@@ -4,11 +4,15 @@ project:
 
 website:
   title: "Robert J. Bischoff"
+  site-url: https://bischrob.github.io/
+  description: "Robert J. Bischoff's personal website and blog containing posts on archaeology, R, and data science."
   navbar:
     right:
       - about.qmd
       - icon: github
         href: https://github.com/bischrob
+      - icon: rss
+        href: index.xml
   google-analytics: "G-WBBYPE7DC2"
   
 format:

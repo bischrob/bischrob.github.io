@@ -1,0 +1,2659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Robert J. Bischoff</title>
+<link>https://bischrob.github.io/</link>
+<atom:link href="https://bischrob.github.io/index.xml" rel="self" type="application/rss+xml"/>
+<description>Robert J. Bischoff&#39;s personal website and blog containing posts on archaeology, R, and data science.</description>
+<generator>quarto-1.4.555</generator>
+<lastBuildDate>Tue, 23 Jul 2024 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Blog Update</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Blog Update/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Today I converted my website to the Quarto format instead of the Jekyll Github Pages format. You can learn more about Quarto blogs <a href="https://quarto.org/docs/websites/website-blog.html">here</a>. I did this mostly because it will be easier to manage and update.</p>
+<p>Let me know if you find any errors in a post after the conversion. I can be reached at <a href="mailto:bischrob@gmail.com">bischrob@gmail.com</a>.</p>
+
+
+
+ ]]></description>
+  <category>news</category>
+  <guid>https://bischrob.github.io/posts/Blog Update/post.html</guid>
+  <pubDate>Tue, 23 Jul 2024 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Managing Hanging R Code</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Managing-Hanging-R-Code/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>I came across an intriguing/frustrating problem while conducting network analysis in R. The basic problem was that my code was hanging and I could find no way to completely avoid it. This post describes how I was able to solve the problem. Before continuing, I want to note that typically hanging code is a user error or sign of a bug, and it is best to solve the problem rather than brute force a solution. However, in some cases, you may need to run code that could hang and you want to stop it after a certain amount of time. This post describes how to do that.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Managing-Hanging-R-Code/HangingCode.png" class="img-fluid figure-img"></p>
+<figcaption>Hanging Code</figcaption>
+</figure>
+</div>
+<p>I wanted to run an Exponential Random Graph Model (ERGM) on a list of graphs. The problem was that the <em>ergm</em> function would hang on some graphs, and I couldn’t find a way to stop the code from running other than manually terminating it. This wouldn’t be a huge problem, if I wasn’t running the code for several thousand graphs. My first thought was to try a different package or maybe even do it in Python, but it turns out this is the only package that can calculate an ERGM and it isn’t available in Python. I also discovered that it was a known issue that the <em>ergm</em> function can hang under certain conditions.</p>
+<p>The solution to the problem is found in the <em>callr</em> package. This package allows the user to create background R processes that can be supervised. The length of the background process can be monitored and it can be terminated if it exceeds that time frame. This solved my problem and saved me from manually running the code for each graph.</p>
+<p>Below is example code demonstrating my process.</p>
+<p>First, we’ll create a list of example graphs. We can create a graph like this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1010</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(statnet)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tergm</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ergm</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: network</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'network' 1.18.2 (2023-12-04), part of the Statnet Project
+* 'news(package="network")' for changes since last version
+* 'citation("network")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'ergm' 4.6.0 (2023-12-17), part of the Statnet Project
+* 'news(package="ergm")' for changes since last version
+* 'citation("ergm")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>'ergm' 4 is a major update that introduces some backwards-incompatible
+changes. Please type 'news(package="ergm")' for a list of major
+changes.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: networkDynamic</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'networkDynamic' 0.11.4 (2023-12-10?), part of the Statnet Project
+* 'news(package="networkDynamic")' for changes since last version
+* 'citation("networkDynamic")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'tergm':
+  method                   from
+  simulate_formula.network ergm</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'tergm' 4.2.0 (2023-05-30), part of the Statnet Project
+* 'news(package="tergm")' for changes since last version
+* 'citation("tergm")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'tergm'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ergm':
+
+    snctrl</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ergm.count</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'ergm.count' 4.1.2 (2024-06-15), part of the Statnet Project
+* 'news(package="ergm.count")' for changes since last version
+* 'citation("ergm.count")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sna</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: statnet.common</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'statnet.common'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ergm':
+
+    snctrl</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    attr, order</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>sna: Tools for Social Network Analysis
+Version 2.7-2 created on 2023-12-05.
+copyright (c) 2005, Carter T. Butts, University of California-Irvine
+ For citation information, type citation("sna").
+ Type help(package="sna") to get started.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: tsna</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+'statnet' 2019.6 (2019-06-13), part of the Statnet Project
+* 'news(package="statnet")' for changes since last version
+* 'citation("statnet")' for citation information
+* 'https://statnet.org' for help, support, and other information</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>unable to reach CRAN</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">g <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">network</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgraph</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tprob =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>))</span>
+<span id="cb25-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(g)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Managing-Hanging-R-Code/post_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We’ll use the <em>lapply</em> function to make a list of graphs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">graphs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lapply</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">network</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgraph</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tprob =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)))</span>
+<span id="cb26-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(graphs) <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> letters[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>]</span></code></pre></div>
+</div>
+<p>Now we have graphs we can use with the <em>ergm</em> function. For simplicity, we’ll use a for loop to calculate the ergm for each graph. I’ve commented out the below code, because it will hang the R session.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># # don't run</span></span>
+<span id="cb27-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># for (graph in graphs){</span></span>
+<span id="cb27-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#   ergm(graph ~ edges + triangles)</span></span>
+<span id="cb27-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># }</span></span></code></pre></div>
+</div>
+<p>How do we handle this? Error handling like <em>try</em> or <em>tryCatch</em> won’t work because the R session is hanging not providing an error. What I want to do is stop the code from running if it takes longer than a certain time. We can do this by running the code in a background process. We can use the <em>r_bg()</em> function from the <em>callr</em> package. We can specify the time limit for the process to run. If the process takes longer than the time limit, the process will be killed.</p>
+<p>To do this, we’ll need to create a function to supervise the background process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">run_and_monitor_processes <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(bg, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">timeout =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>) {</span>
+<span id="cb28-2">  start_times <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Sys.time</span>()</span>
+<span id="cb28-3">  </span>
+<span id="cb28-4">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Monitor processes</span></span>
+<span id="cb28-5">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">while</span> (<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) {</span>
+<span id="cb28-6">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Sys.sleep</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Check every second</span></span>
+<span id="cb28-7">    </span>
+<span id="cb28-8">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Check the status of each process</span></span>
+<span id="cb28-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (name <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(bg)) {</span>
+<span id="cb28-10">      <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (bg[[name]]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">is_alive</span>()) {</span>
+<span id="cb28-11">        run_time <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">difftime</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Sys.time</span>(), start_times, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">units =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"secs"</span>))</span>
+<span id="cb28-12">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (shiny<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">isTruthy</span>(run_time <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> timeout)) {</span>
+<span id="cb28-13">          bg[[name]]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kill</span>()  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Kill process if it exceeds timeout</span></span>
+<span id="cb28-14">          <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cat</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Process"</span>, name, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"killed after"</span>, run_time, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"seconds</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\n</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb28-15">        }</span>
+<span id="cb28-16">      }</span>
+<span id="cb28-17">    }</span>
+<span id="cb28-18">    </span>
+<span id="cb28-19">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Exit the loop if all processes are done</span></span>
+<span id="cb28-20">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">all</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(bg, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(p) p<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">is_alive</span>()))) {</span>
+<span id="cb28-21">      <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">break</span></span>
+<span id="cb28-22">    }</span>
+<span id="cb28-23">  }</span>
+<span id="cb28-24">}</span></code></pre></div>
+</div>
+<p>This function checks how long a process has been running and kills it if it exceeds the specified timeout. Once all processes are done, the function exits.</p>
+<p>We also need to create a function to run the ERGM so we can pass in the arguments and load the <em>statnet</em> package. We are creating a separate background process that does not have access to the global environment. Results can be obtained from the background process using the <em>get_result()</em> function, but I find it safer when running longer code to just write the results to a file. This way the results are saved even if R crashes or something else interrupts the code.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">tmp_dir <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tempdir</span>()</span>
+<span id="cb29-2">run_ergm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(graph, dir, i){</span>
+<span id="cb29-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(statnet)</span>
+<span id="cb29-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ergm</span>(graph <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> edges <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> triangles)</span>
+<span id="cb29-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">writeLines</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Done"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">file.path</span>(dir, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"done-"</span>,i,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">".txt"</span>)))</span>
+<span id="cb29-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Done"</span>)</span>
+<span id="cb29-7">}</span></code></pre></div>
+</div>
+<p>Now we can run our <em>run_ergm</em> function for each graph without the process hanging. An additional advantage is that we are running the code in parallel, which can speed up the process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(callr)</span>
+<span id="cb30-2">bg <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>() <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create a global list to store the background processes</span></span>
+<span id="cb30-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(graphs)){</span>
+<span id="cb30-4">  graph <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> graphs[[i]]</span>
+<span id="cb30-5">  nm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(graphs)[i]</span>
+<span id="cb30-6">  bg[[nm]] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">r_bg</span>(run_ergm, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">args =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">graph =</span> graph, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dir =</span> tmp_dir, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">i =</span> i))</span>
+<span id="cb30-7">}</span>
+<span id="cb30-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run_and_monitor_processes</span>(bg)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Process b killed after 15.21355 seconds
+Process h killed after 15.28757 seconds
+Process i killed after 15.34911 seconds
+Process j killed after 15.42225 seconds</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># get results</span></span>
+<span id="cb32-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(bg, <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(p) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tryCatch</span>(p<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_result</span>(),<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">error =</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(e) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     a      b      c      d      e      f      g      h      i      j 
+"Done"     NA "Done" "Done" "Done" "Done" "Done"     NA     NA     NA </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># view saved results</span></span>
+<span id="cb34-2">ls <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list.files</span>(tmp_dir, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"done"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">full.names =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb34-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sapply</span>(ls,readLines))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-1.txt 
+                                                          "Done" 
+C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-3.txt 
+                                                          "Done" 
+C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-4.txt 
+                                                          "Done" 
+C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-5.txt 
+                                                          "Done" 
+C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-6.txt 
+                                                          "Done" 
+C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-7.txt 
+                                                          "Done" </code></pre>
+</div>
+</div>
+<p>The results show that the code was able to run the ERGM for each graph without hanging, although we did not get results for two of the graphs because they timed out. Obviously, in a real use case we would want to return real results, but this simple example should allow you to adapt your code to solve hanging code problems.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Managing-Hanging-R-Code/post.html</guid>
+  <pubDate>Tue, 23 Jul 2024 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Automated NetLogo Flowcharts in R</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/flowChart.svg" class="img-fluid figure-img"></p>
+<figcaption>Flow chart</figcaption>
+</figure>
+</div>
+<section id="netlogo" class="level2">
+<h2 class="anchored" data-anchor-id="netlogo">NetLogo</h2>
+<p>NetLogo is a popular tool for building agent based models. A helpful group has built a nice R package for interfacing with NetLogo called <a href="https://docs.ropensci.org/nlrx/reference/nlrx-package.html">NLRX</a>. One of the functions that is really fun to play with is the <em>nldoc_network</em> function. It builds an igraph object using the NetLogo code that graphs the procedure calls in the model.</p>
+<p>We’ll use the Bacterial Infection model as an example.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/Bacterial Infection.png" class="img-fluid figure-img"></p>
+<figcaption>Bacterial Infection</figcaption>
+</figure>
+</div>
+<p>We need to first find the directory it is in. This will vary by operating system and version. Then we can call the function and get an igraph network.</p>
+<pre><code>library(nlrx, quietly = T, warn.conflicts = F)
+dir = "C:\\Program Files\\NetLogo 6.2.2\\app\\models\\Sample Models\\Biology\\Evolution"
+model = file.path(dir,"Bacterial Infection.nlogo")
+nw = nldoc_network(model)
+nw</code></pre>
+<p>We can plot it with igraph.</p>
+<pre><code>plot(nw)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/igraphPlot.png" class="img-fluid figure-img"></p>
+<figcaption>igraph plot</figcaption>
+</figure>
+</div>
+</section>
+<section id="flowcharts" class="level1">
+<h1>Flowcharts</h1>
+<p>Typically, we don’t present a graph like this when we’re writing about our models. We need something like a flowchart. A flowchart is a kind of graph, but it has a bit more structure. How can we turn this graph into a flowchart?</p>
+<p>The <a href="https://rich-iannone.github.io/DiagrammeR/index.html">diagrammeR</a> package has all of the necessary tools, but the syntax has to be written out in a form like this:</p>
+<pre><code>library(DiagrammeR, quietly = T, warn.conflicts = F)
+grViz("
+digraph boxes_and_circles {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 10]
+
+  # several 'node' statements
+  node [shape = box,
+        fontname = Helvetica]
+  A; B; C; D;
+
+  node [shape = circle,
+        fixedsize = true,
+        width = 0.9] // sets as circles
+  1; 2; 3;
+
+  # several 'edge' statements
+  A-&gt;1 B-&gt;2 B-&gt;3 C-&gt;A
+  1-&gt;D C-&gt;B
+}
+")</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/flowChart1.png" class="img-fluid figure-img" width="300"></p>
+<figcaption>flow chart 1</figcaption>
+</figure>
+</div>
+<p>Writing it out like this kind of kills the fun in automatically building our flowchart from the code. But really this is just a character string, so we can paste or glue together what we need without having to type it out.</p>
+<p>We can extract a dataframe from our igraph object easily enough. Note: in this model the procedure names use a hyphen, which is common in NetLogo (although I don’t recommend it). The hyphen is a special character in GraphViz (the underlying software we are using in diagrammeR), so we will just remove it.</p>
+<pre><code>library(igraph, quietly = T, warn.conflicts = F)
+library(dplyr, quietly = T, warn.conflicts = F)
+library(stringr, quietly = T, warn.conflicts = F)
+edges = igraph::as_data_frame(nw) %&gt;% 
+  mutate_all(str_remove_all,pattern = "-")
+nodes = V(nw)$name %&gt;% str_remove_all("-")</code></pre>
+<p>We will then use a combination of paste and map (the glue package caused a conflict with the github pages build on my website) to format our edges and nodes into the proper shape.</p>
+<pre><code>library(purrr, quietly = T, warn.conflicts = F)
+diagram = paste("
+  digraph {
+      graph []
+      
+      node []
+  ",paste(nodes,collapse = '; '),"
+      
+  ",paste(map2_chr(edges$from,edges$to,function(x,y)paste0(c(x,y), collapse = '-&gt;')),collapse = ' '),"
+      }"
+)
+grViz(diagram)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/flowChart2.png" class="img-fluid figure-img"></p>
+<figcaption>flow chart 2</figcaption>
+</figure>
+</div>
+<p>Already this looks like a much better graph visualization than what we had before.</p>
+<p>But we can always tweak it and make some improvements. How about adding some color, changing the font, and changing the ellipses to boxes?</p>
+<pre><code>diagram = paste(
+  "
+  digraph {
+      graph [fontsize = 10, fontname = Helvetica]
+      
+      node [shape = box, fillcolor = Beige, style = filled]
+  ",paste(nodes,collapse = '; '),"
+      
+  ",paste(map2_chr(edges$from,edges$to,function(x,y)paste0(c(x,y), collapse = '-&gt;')),collapse = ' '),"
+      }"
+)
+grViz(diagram)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/flowChart3.png" class="img-fluid figure-img"></p>
+<figcaption>flow chart 3</figcaption>
+</figure>
+</div>
+<p>The last change we might want to make is to highlight certain nodes. Let’s make it simple and just highlight setup and go. These two nodes are the only procedures directly called by the user, so let’s make them stand out. Let’s also make the arrows straight.</p>
+<pre><code>diagram = paste(
+  "
+  digraph {
+      graph [fontsize = 10, fontname = Helvetica, splines = ortho]
+      
+      node [shape = triangle, fillcolor = Honeydew, style = filled]
+    go; setup
+      
+      node [shape = box, fillcolor = Beige, style = filled]
+  ",paste(nodes[which(!nodes %in% c('go','setup'))],collapse = '; '),"
+      
+  ",paste(map2_chr(edges$from,edges$to,function(x,y)paste0(c(x,y), collapse = '-&gt;')),collapse = ' '),"
+      }"
+)
+grViz(diagram)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/flowChart4.png" class="img-fluid figure-img"></p>
+<figcaption>flow chart 4</figcaption>
+</figure>
+</div>
+<p>And that is a much improved flowchart from the initial igraph plot and this code is easily adaptable to any NetLogo model. There are a lot of options that you can use to customize the flowchart even further, but we still need to save the flowchart. We can use the <a href="https://github.com/rich-iannone/DiagrammeRsvg">DiagrammeRsvg</a> for that and save to file or save as a png using the <a href="https://docs.ropensci.org/magick/articles/intro.html">magick</a> package as well.</p>
+<pre><code>library(DiagrammeRsvg, quietly = T, warn.conflicts = F)
+grViz(diagram) %&gt;% export_svg() %&gt;% writeLines(con = "flowChart.svg")
+library(magick, quietly = T, warn.conflicts = F)
+grViz(diagram) %&gt;% export_svg() %&gt;% image_read_svg() %&gt;% image_write("flowChart.png")</code></pre>
+<p>And there you have an automatically generated flowchart, and for most NetLogo models all you would have to do is change the file name and path.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/post.html</guid>
+  <pubDate>Thu, 08 Dec 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>UseR Conference Shiny Presentation</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/UseR-Conference-Shiny-Presentation/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Today I had the opportunity to present the work I’ve done with Dan Hruschka on the CatMapper application in the virtual UseR conference. The app was built using R shiny and Neo4j.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/UseR-Conference-Shiny-Presentation/CatMapperWalkThrough.gif" class="img-fluid figure-img"></p>
+<figcaption>CatMapper walk-through</figcaption>
+</figure>
+</div>
+<p>You can download the powerpoint <a href="../..\data/Slides/CatMapperShinyApplication.pptx">here</a></p>
+
+
+
+ ]]></description>
+  <category>presentation</category>
+  <category>R</category>
+  <guid>https://bischrob.github.io/posts/UseR-Conference-Shiny-Presentation/post.html</guid>
+  <pubDate>Tue, 21 Jun 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Getting My Powerpoint Online</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Getting-my-Powerpoint-Online/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Powerpoints are great. I know we like to pretend we hate them, but in a conference setting where the alternative is to just stare at the presenter awkwardly, I prefer to alternate staring awkwardly and, hopefully, look at some pretty pictures and graphs. This year, I thought I’d put my presentation for the Society for American Archaeology (SAA) Annual Meeting presentation online. It may not be the best presentation, but I want to try to be as open with my work as I can.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Getting-my-Powerpoint-Online/TontoBasinPPFigure.jpg" class="img-fluid figure-img"></p>
+<figcaption>Tonto Basin Powerpoint</figcaption>
+</figure>
+</div>
+<p>I found two ways to do this. First, when I stopped by the wonderful tDAR (tDAR.org) booth, I found out just how easy it is to upload my presentation to their database. I’ve been meaning to do this for a while, but have never gotten around to it. tDAR is a permanent digital repository. Essentially you can store anything digital in their repository and it will be both safe and accessible, if you want it to be. Second, I wanted to put up a copy on this blog. The hard, but potentially fun way would be to export and format the presentation into one of the great HTML-based slide presentations, but I decided to take the easy route and use the web version of powerpoint to embed my presentation, which you can enjoy (or not) below.</p>
+<p>The tDAR upload is not ready yet, but you can view the <a href="https://github.com/bischrob/SAA2022">GitHub repository here</a>.</p>
+<p>While I wait for tDAR to process this year’s abstracts, I have managed to upload all of my previous SAA presentations and organize them into a <a href="https://core.tdar.org/collection/70752/robert-bischoff-conference-presentations">collection</a>. Now if I want to find an old SAA presentation for whatever reason, I don’t have to dig through old files. I can go to the tDAR link where the files are stored permanently.</p>
+<p><br></p>
+<p><iframe src="https://onedrive.live.com/embed?cid=0420F657700999BD&amp;resid=420F657700999BD%2110455&amp;authkey=AGSF-XhnQPwU_ao&amp;em=2&amp;wdAr=1.7777777777777777" width="800px" height="600px" frameborder="0">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe></p>
+
+
+
+ ]]></description>
+  <category>tutorial</category>
+  <category>presentation</category>
+  <guid>https://bischrob.github.io/posts/Getting-my-Powerpoint-Online/post.html</guid>
+  <pubDate>Sun, 03 Apr 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Easy GitHub Pages Website</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Easy-GitHub-Pages-Website/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>The <a href="https://shesc.asu.edu/student-life/graduate-clubs-organizations">Association of All Graduate Students</a> at the School of Human Evolution and Social Change at Arizona State University held a workshop led by Maryse Biernat on the topic of digital portfolios–essentially building your own website. My contribution was demonstrating how I built this website.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Easy-GitHub-Pages-Website/githubpages.jpeg" class="img-fluid figure-img"></p>
+<figcaption>githubpages</figcaption>
+</figure>
+</div>
+<p>I chose to use GitHub because I didn’t like the restrictions of WordPress. I spent some frustrating hours trying to build something from scratch and then went the smart route and forked Barry Clark’s respository <a href="https://github.com/barryclark/jekyll-now">barryclark/jekyll-now</a>. I followed the tutorial he gives there to get my own website up and running. But, I wanted a more academic-focused site for the workshop, so I created this example repository <a href="https://github.com/rjbischo/rjbischo.github.io">rjbischo/rjbischo.github.io</a>.</p>
+<p>The steps are essentially the same as what are in Clark’s repository, but here is the gist of it, and you can be up and running in minutes by changing a few things in the files. The main prerequisite is that you need to know a little about git, but you can get started with the <a href="https://desktop.github.com/">GitHub Desktop</a> app and that’s all you’ll need.</p>
+<p>Steps to create a GitHub pages website:</p>
+<p>1. Create an account (your username will be your website address–{username}.<a href="http://github.io/">github.io</a>)</p>
+<p>2. Fork this repository – <a href="https://github.com/rjbischo/rjbischo.github.io" class="uri">https://github.com/rjbischo/rjbischo.github.io</a></p>
+<p>3. Rename the repository to {your username}.<a href="http://github.io/">github.io</a></p>
+<p>4. Clone the repository</p>
+<p>5. Update the _config.yml, about.html, CV.html, CV.pdf, publications.html, _includes/default.html and images to whatever you want them to be.</p>
+<p>6. Push the repository to GitHub.</p>
+<p>7. Go to your new website at {your username}.<a href="http://github.io/">github.io</a></p>
+<p>For your reference, here are some example GitHub pages:</p>
+<p><a href="https://github.com/collections/github-pages-examples" class="uri">https://github.com/collections/github-pages-examples</a></p>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I like that GitHub pages is free, you can be up and running in minutes, and it is endlessly customizable. The drawback is customizing it is not as user friendly as some other sites, but that can be part of the fun as you learn new things.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Easy-GitHub-Pages-Website/post.html</guid>
+  <pubDate>Fri, 11 Mar 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Artifact Photogrammetry Basics</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="photogrammetry" class="level2">
+<h2 class="anchored" data-anchor-id="photogrammetry">Photogrammetry</h2>
+<p>Photogrammetry is a broad field that involves obtaining metrics from photographs. Structure from motion (often abbreviated <strong><em>sfm</em></strong>) is a branch of photogrammetry focused on estimating 3D structure from photos. This is usually what we mean when we say photogrammetry, and I’m happy to continue using the generic term, but now you know.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/Collage.png" class="img-fluid figure-img"></p>
+<figcaption>Collage</figcaption>
+</figure>
+</div>
+<p>Photogrammetry is useful in a broad range of fields and is becoming a standard–even common–method in archaeology. 3D models can be used for preservation (artifacts cannot be replaced by 3D models, but much would have been preserved if we had 3D models of all the objects loss in the fire at the <a href="https://www.nationalgeographic.com/science/article/news-museu-nacional-fire-rio-de-janeiro-natural-history">Museu Nacional in Rio de Janeiro</a>), for public outreach (the <a href="https://vcuarchaeology3d.wordpress.com/">Virtual Curation Laboratory</a> is a great example), and for analysis (primarily through geometric morphometrics).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://news.vcu.edu/article/At_Civil_War_Museums_Emancipation_Day_VCU_students_use_3D_printing"><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/DSC_3146_sm.png" class="img-fluid figure-img" alt="3D printing"></a></p>
+<figcaption>3D printing</figcaption>
+</figure>
+</div>
+<figcaption>
+<p>credit Brian McNeill</p>
+</figcaption>
+<p><br></p>
+<p>Photogrammetry is one of many ways to create 3D models, but it is one of the least expensive. Options range from free to use cell phone apps to professional software costing thousands a year for a license (<a href="https://peterfalkingham.com/2020/07/10/free-and-commercial-photogrammetry-software-review-2020/">here</a> is a recent look at different software. Agisoft’s Metashape has been around a while (it used to be called Photoscan) and it is what I use the most (I use the standard version purchased with a student license).</p>
+<p>My purpose here is to give a brief demonstration of my workflow for creating 3D models from archaeological artifacts (applies to any object really). The <a href="https://www.agisoft.com/downloads/user-manuals/" class="mainImg">Metashape manual</a> is quite useful, and there are a lot of good references online. I learned photogrammetry myself through Youtube and Google.</p>
+<p>There is a major difference between creating a full, 360° model and making a landscape model or modeling a stationary object. Photogrammetry uses reference points in the images to calculate the 3D structure, but if you move something in the background or the object itself, then it creates problems. The problem with modeling an artifact is that you usually need to flip the artifact over to get all sides of it. Once you flip the object over the software will usually create something like this.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/DoubledImage.png" class="img-fluid figure-img"></p>
+<figcaption>Double Image</figcaption>
+</figure>
+</div>
+<p>The solution is to tell the software to ignore everything in the background. There are many ways to do this, but the most sure is to make a black and white masks for each image. This is the process I’ll demonstrate, but before you make a 3D model you need to take the pictures.</p>
+<p>And before that, you need something to model…</p>
+</section>
+<section id="selecting-an-object" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-an-object">Selecting an object</h2>
+<p>Factors to consider when selecting an object are object geometry, surface reflection/transparency, sharp/fine edges, and moving/flowing parts. You need to be able to capture all aspects of the object from multiple camera angles. This can be challenging with small orifices or complicated geometry. For example, the Clay Pipe model below was challenging because I could not capture very far into the interior of the pipe. The size of the object makes a big difference but only because of the difficulty photographing it. If you can take a picture of it then then you can make a 3D model, but you may need special equipment for very small objects. A macro lens is a good investment.</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="FS9491 Fremont Clay Pipe" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/a4e08f0908c54126a2b7e6b127543b8d/embed">
+</iframe>
+</div>
+<p><br></p>
+<p>Transparent and reflective images will not work for photogrammetry due to the light distortion, but you can coat the surface with something non-reflective. I’ve tried talcum powder and it worked, but it wasn’t my favorite (see Clovis point below for my talcum example–note that the obsidian looking surface in the 3D model was made using <a href="https://www.blender.org/">Blender</a>. <a href="https://www.researchgate.net/profile/Samantha-Porter-5/publication/299820517_A_Comparison_of_Methods_for_Creating_3D_Models_of_Obsidian_Artifacts/links/5705ac7808aef745f7176f23/A-Comparison-of-Methods-for-Creating-3D-Models-of-Obsidian-Artifacts.pdf">This</a> is a good study comparing different options.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/ObsidianCoating.jpg" class="img-fluid figure-img"></p>
+<figcaption>Obsidian Coating</figcaption>
+</figure>
+</div>
+<figcaption>
+<p>Clovis point coated in talcum powder</p>
+</figcaption>
+<p><br></p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Clovis Point" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/7d120265e751404a8f83c7ae882c5458/embed?ui_theme=dark">
+</iframe>
+</div>
+<p><br></p>
+<p>Another challenge is fine particles like hair or fur or sharp edges. The sharp edges of the obsidian Clovis point took several attempts to capture, but I found that taking lots of pictures helped. Anything that moves freely like hair or fur will be a challenge if it is not in the same relative position from photo to photo. This cradle figurine is a good example of how fur is difficult to capture. You can see that the edges are much fuzzier than other parts of the model. There are also holes where it was difficult to photograph the object due to the angles. I also didn’t want to set the basket upside down to photograph the back so that part is missing. To make the model seem nicer I added a board using Blender to make it look like it was sitting on something.</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Cradle Figurine" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/8b0d2c3a550648a3bf1bc121c067db9f/embed">
+</iframe>
+</div>
+<p><br></p>
+<p>To start with, I recommend choosing an object with rough texture and relatively simple geometry. It should have some distinguishing features though. I’ve found clay figures work very well. <a href="../data/Pillings3Example.zip">Here</a> is a dataset that I will use in this tutorial. These are pictures of <a href="https://bischrob.github.io/Pilling-Figurines-3D-Models/">Pillings Figurine No.&nbsp;3</a> which is on display at the <a href="https://eastern.usu.edu/museum/">USU Eastern Prehistoric Museum</a>. While choosing a good artifact is helpful for learning, don’t give up! I have been able to make 3D models work in some pretty bad situations–I even wrote a <a href="https://bischrob.github.io/Pilling-Figurines-3D-Models/">post</a> about it.</p>
+</section>
+<section id="photography" class="level2">
+<h2 class="anchored" data-anchor-id="photography">Photography</h2>
+<p>This is the most important step! It doesn’t matter how good your software is if your photos are garbage or you don’t have enough of them. I’ll be brief in a section that could use a lengthy discussion, and I still have a lot to learn myself.</p>
+<section id="equipment" class="level3">
+<h3 class="anchored" data-anchor-id="equipment">Equipment</h3>
+<p>I’ll list the optimal equipment here, but if you don’t have it then do without:</p>
+<ul>
+<li><p>DSLR Camera</p></li>
+<li><p>Macro lens</p></li>
+<li><p>Tripod</p></li>
+<li><p>Remote shutter release</p></li>
+<li><p>Lighting</p></li>
+<li><p>Turntable</p></li>
+</ul>
+</section>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p>Because you are removing the background, you want something as uniform as possible (think green screen technology but if you use green you may have to correct for the green glare). Choose something that contrasts with the color of the object so you can easily remove the background later.</p>
+<p>You want the camera stationary for best results, so use a tripod. The remote shutter release is great so that you don’t bump the camera while taking pictures.</p>
+<p>Lighting is always the most important element in photography. You want diffuse light that doesn’t cause harsh shadows. In fact, try to avoid all shadows (yes this can be a challenge–light boxes are one option).</p>
+<p>The turntable makes life a lot easier. You can even put marks on it to tell you how far to rotate the table in between shots. I’ve never used one, but an automatic turntable setup would be amazing.</p>
+<p>I haven’t mentioned a scale yet. Many people include a scale in the photos and then you can scale the model directly to the included scale. I don’t like it because I find it makes masking harder. My solution is to measure a feature of the object and then scale the object later. <a href="https://bischrob.github.io/Tutorial-Size-3D-Models-in-Blender/">This post</a> is a bit outdated now (I use Blender which has changed a lot), but it describes my process.</p>
+<p>One challenge is how to place the object. You can use a stand, putty, or set the object directly on the turntable, or on something else to hold it slightly off the turntable (having the object off the turntable reduces shadows). This process is very dependent on the object you want to capture.</p>
+</section>
+<section id="taking-pictures" class="level3">
+<h3 class="anchored" data-anchor-id="taking-pictures">Taking pictures</h3>
+<section id="settings" class="level4">
+<h4 class="anchored" data-anchor-id="settings">Settings</h4>
+<p>Use manual settings on the camera. The fewer settings (ideally none) that change the better. You don’t even want the focus to change. My wife is a photographer but it wasn’t until I learned photogrammetry that I picked up how to use a camera manually. There are four key things to control–and they’re all related (changing one may require changing another):</p>
+<ul>
+<li><p>Focus</p></li>
+<li><p>Aperture</p></li>
+<li><p>ISO</p></li>
+<li><p>Shutter speed</p></li>
+</ul>
+<p>You want as much of the object in focus as possible. Manually focus on the center of the object, and then don’t change the focus (turn autofocus off). The aperture (f-stop/f-number) controls the depth of field. This describes how much of the object is in focus at the same time. A low f-stop has a shallow depth of field, so you want a high f-stop. Be careful with the f-stop though. One mistake I used to make was using too high of an f-stop. If the f-stop is too high then the physics of light diffraction will make the images blurrier (Google it if you want to know why). You want the lowest f-stop that keeps the entire–or at least most–of the object in focus.</p>
+<p>ISO is a balance between brightness and graininess. A low ISO gives you less grainy images but requires more light. A high ISO allows you to use less light but you will have grainy pictures. Set up your lighting to allow the lowest ISO.</p>
+<p>Shutter speed is how long the camera shutter stays open. Longer exposures lead to brighter images. If you have a high f-stop then you let in less light, and if you have a low ISO you have a darker photo. The balance to these is to have a longer shutter-speed. If something moves while the shutter is open, then you will have a blurry photo. With a tripod and a stationary object on a turntable, you shouldn’t have to worry about how long the shutter stays open. The drawback is that longer shutter speeds means it takes longer to take the picture. More lighting can help with this though.</p>
+<p>You’ll need to experiment with these settings until you have a photo that is sharp and not too dark. Once you have the settings right, don’t change anything until you’re done with the shoot.</p>
+</section>
+<section id="orientation" class="level4">
+<h4 class="anchored" data-anchor-id="orientation">Orientation</h4>
+<p>Take the photos from a high and low angles: around 45 degrees for high and then from an angle shallow enough to capture the side and some of the top. The can angles vary depending on the object. I like to take about 20 pictures as I move the object in a full circle. That translates to rotating the turntable 18 degrees per photo, but often I just eye ball it. If I’m shooting directly at a sharp edge then I will take more photos as I begin to directly face teh sharp edge (shooting directly at a straight edge isn’t very helpful). Usually I’ll set up the camera for a high angle, take the pictures, flip the object over, and then move the camera to a low-angle position and repeat that step. But it might be easier to move the camera than flip the camera over.</p>
+<p>With this process I end up with about 80 photos. This is usually more than necessary, but not always. If any part of the object isn’t well captured in your photos then take as many additional photos as you need. You don’t have to use every photo in the 3D model, but if you need more photos then you have to do a lot more work.</p>
+</section>
+</section>
+<section id="format-and-resolution" class="level3">
+<h3 class="anchored" data-anchor-id="format-and-resolution">Format and resolution</h3>
+<p>The more data the better, right? Larger files use more storage space and higher resolutions require longer processing times. You can always downsize an image but you can’t increase resolution without interpolating…and don’t bother trying that. I always choose the highest resolution. You can save your files in raw format for best results, but tif or png will work as well. Yes jpg also works, but I recommend against using a lossy format (meaning that jpgs lose some of the information you save–and yes, the tutorial files are in jpg because the data is stored on my website and needs to be as small as possible but I’ve still got the full-resolution tifs). You don’t even need to downsize images to speed up processing because Metashape can do that for you if you want.</p>
+</section>
+</section>
+<section id="masks" class="level2">
+<h2 class="anchored" data-anchor-id="masks">Masks</h2>
+<p>I like to use photoshop to make my masks. You can even <a href="https://bischrob.github.io/Automatic-Background-Removal-for-Photogrammetry/">automate the process</a>. What I do first is copy the photos into a new folder labeled masks. I then edit each photo in the masks folder and save it as is. It may help to add an <strong><em>_mask</em></strong> tag to each filename, but it’s up to you. The mask process is simple. Essentially you just need to select the object using your favorite selection tool. Use the fill tool to make the object white. Invert your selection. Then use the fill tool to make everything else black. Check my post on automating the process to see more details.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/Mask.png" class="img-fluid figure-img"></p>
+<figcaption>Mask</figcaption>
+</figure>
+</div>
+</section>
+<section id="import-images-and-masks" class="level2">
+<h2 class="anchored" data-anchor-id="import-images-and-masks">Import images and masks</h2>
+<p>Now we can open metashape. If you don’t have it, then <a href="https://www.agisoft.com/downloads/installer/">download</a> it on a free trial basis to start. You can <a href="../data/Pillings3Example.zip">download</a> some reduced-resolution photos to follow along or include your own. Click on the <strong><em>Workflow</em></strong> drop down menu and select <strong><em>Add Photos</em></strong>. Select all of your photos and import them. Next, we need to add the masks. You’ll see a folder labeled <strong><em>Cameras</em></strong> under <strong><em>Chunk 1</em></strong> in the workspace on the left. Click the arrow next to the <strong><em>Cameras</em></strong> folder to see all of the images. Right click on one (pick a photo, any photo) and find the option labeled <strong><em>Masks</em></strong>. Click <strong><em>Import Masks</em></strong>. You will see a menu like the one below. Your method should be <strong><em>From File</em></strong>. The operation should be <strong><em>Replacement</em></strong>. If you are using the test dataset then the filename should look like <strong><em>{filename}.jpg</em></strong>. What the filename structure means is that the software will look for a file with the same name as the images we already imported. If your image is A1.jpg and your mask is called A1_mask.jpg then the <strong><em>Filename template</em></strong> should look like <strong><em>{filename}_mask.jpg</em></strong>. Tolerance doesn’t apply to this operation and you want to make sure the <strong><em>All cameras</em></strong> option is selected in the <strong><em>Apply to</em></strong> section. Press ok, and you can then select the folder where the masks are stored. You should now see the non-object areas of your images grayed out.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/ImportMasks.png" class="img-fluid figure-img"></p>
+<figcaption>Import Masks</figcaption>
+</figure>
+</div>
+</section>
+<section id="align-cameras" class="level2">
+<h2 class="anchored" data-anchor-id="align-cameras">Align cameras</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/TiePoints.png" class="img-fluid figure-img"></p>
+<figcaption>Tie Points</figcaption>
+</figure>
+</div>
+<p>Go back to the <strong><em>Workflow</em></strong> menu and choose <strong><em>Align Photos</em></strong>. You’ll see a menu like the one below. You haven’t had to make any real decisions in the workflow up to this point, but now we have a lot of options. Aligning the photos is <strong>the most important step</strong> in the 3D modeling process. If this step works well then you will get a good 3D model, otherwise you’ll need new photos. Don’t get discouraged if your photos don’t align on the first try though! It can take a lot of playing with the settings if you have a difficult object, but you can get good results with bad photographs (see <a href="https://osf.io/preprints/socarxiv/e9cw2/">this article</a> for archaeological examples). While you want your photos to align nicely the first try, higher settings shouldn’t be your first option and you can sometimes get better results with lower settings. The <strong><em>Accuracy</em></strong> option controls whether the image is reduced in size (your original images are not modified) before matching begins. I would try medium first and then work to higher settings if you get bad results. Higher settings can significantly increase the time it takes to align photos. Each of the following steps can take seconds to hours depending on the number of images, masks, and settings. Each of the steps below took less than a minute on my machine, but it may take much longer. You can check the manual for descriptions of every option, as I’ll only point out the ones that you need to change or double check. For this step, just choose your accuracy and make sure that the <strong><em>Apply masks to</em></strong> option reads <strong><em>Key points</em></strong> in the <strong><em>Advanced</em></strong> section. Hit ok and let the software run the calculations.</p>
+<p>Click the <strong><em>show cameras</em></strong> option on the menu bar (looks like a camera) if you don’t see the positions of your camera next to the tie points that were just generated. The tie points should generally resemble your object, but don’t worry if some points are scattered about in the wrong positions. You can also check the positions of the cameras around the object. If one looks out of place then you can remove it, disable it, or (best option) try to realign it by right clicking on the photo and using the options listed there. If not all cameras are aligned, the first step I recommend is to try aligning again with higher settings.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/AlignPhotos.png" class="img-fluid figure-img"></p>
+<figcaption>Align Photos</figcaption>
+</figure>
+</div>
+</section>
+<section id="build-dense-cloud" class="level2">
+<h2 class="anchored" data-anchor-id="build-dense-cloud">Build dense cloud</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/DenseCloud.png" class="img-fluid figure-img"></p>
+<figcaption>Dense Cloud</figcaption>
+</figure>
+</div>
+<p>If all your cameras seem aligned then build your dense cloud by going back to the <strong><em>Workflow</em></strong> menu and choosing <strong><em>Build Dense Cloud</em></strong>. I would start with high quality in this case, as the photos are already reduced. I also usually choose <strong><em>Aggressive</em></strong> for the <strong><em>Depth filtering</em></strong> shown in the <strong><em>Advanced</em></strong> section. Press ok and you should get a result (this part will take the longest) that looks a lot like what you are trying to model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/BuildDenseCloud.png" class="img-fluid figure-img"></p>
+<figcaption>Build Dense Cloud</figcaption>
+</figure>
+</div>
+</section>
+<section id="build-mesh" class="level2">
+<h2 class="anchored" data-anchor-id="build-mesh">Build mesh</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/3DModelNoTexture.png" class="img-fluid figure-img"></p>
+<figcaption>3D Model No Texture</figcaption>
+</figure>
+</div>
+<p>As you might guess, the next step is to go back to the <strong><em>Workflow</em></strong> menu and choose the next option–<strong><em>Build Mesh</em></strong>. I always choose a high <strong><em>Face count</em></strong> at this step. I leave everything else at its default. For some objects you will need to disable <strong><em>Interpolation</em></strong> in the <strong><em>Advanced</em></strong> section. This will attempt to fill holes which is often necessary, but sometimes it can distort the model and create an innacurate representation. If the model is meant for precise geometric morphometrics or other analysis then interpolation may cause problems. You should now have a 3D model that should even be 3D printable.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/BuildMesh.png" class="img-fluid figure-img"></p>
+<figcaption>Build Mesh</figcaption>
+</figure>
+</div>
+</section>
+<section id="add-texture" class="level2">
+<h2 class="anchored" data-anchor-id="add-texture">Add texture</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/3DModelTexture.png" class="img-fluid figure-img"></p>
+<figcaption>3D Model Texture</figcaption>
+</figure>
+</div>
+<p>The last step in the photogrammetry process is to add a texture. This does nothing to the model from a 3D standpoint, but it does add a nice, photorealistic touch that significantly improves the look of your model. Select the <strong><em>Build Texture</em></strong> option from the <strong><em>Workflow</em></strong> menu, and leave everything at the default. In some cases, you may want to increase the texture size for more detail. You should notice much clearer looking details on the model now.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/Texture.png" class="img-fluid figure-img"></p>
+<figcaption>Texture</figcaption>
+</figure>
+</div>
+<p>This is what your model should look like if you used the example files (except this model was made on full-resolution photos):</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Pilling Figurine No. 3" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/0014dfbf96f8438997e407e841d8c027/embed?ui_theme=dark">
+</iframe>
+</div>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export">Export</h2>
+<p>There are other options to manipulate the model in Metashape that can be useful. 3D models are often huge files and your computer may struggle to render it. You can decimate the mesh (reduce the number of triangles) by going to <strong><em>Tools</em></strong> &gt; <strong><em>Mesh</em></strong> &gt; <strong><em>Decimate Mesh</em></strong>. Choose a target face count and the model size will be reduced. The great thing about photogrammetry is that as long as you have the original photos you can reproduce your workflow and create higher resolution models.</p>
+<p>Once you are satisified with the model you can export it to a number of formats. Choose <strong><em>File</em></strong> &gt; <strong><em>Export</em></strong> &gt; <strong><em>Export Model</em></strong>. My default format is OBJ as it allows you to export the model texture. I usually use the defaults, except I like to choose png for the texture resolution. I will then use Blender to import the model and resize it or clean up bad parts of the model. Meshlab and Cloud Compare are other, open-sourced software that have a lot of great tools for working with 3D models. The easiest to view and share option is to save as an Adobe pdf. If you want to 3D print it, then export to STL.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/Export.png" class="img-fluid figure-img"></p>
+<figcaption>Export</figcaption>
+</figure>
+</div>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
+<p>Now that you have a 3D model what do you do? Share it, print it, and/or analyze it. Sketchfab is probably the easiest way to share your model, although they’ve made it harder to do anything for free lately. 3D printers are a lot cheaper than they used to be, but some libraries now have 3D printing services and there are many online options for 3D printing things. The field of geometric morphometrics has a lot of exciting developments for analyzing shapes and is the next step to explore if you want to start analyzing your 3D models.</p>
+<p>If you have any questions, comments, or tips to share, please let me know in the comments or via <a href="mailto:bischrob@gmail.com">email</a>.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>3D-Models</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/post.html</guid>
+  <pubDate>Thu, 15 Jul 2021 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Academic Reading on the Go — Adobe’s liquid mode is a game changer</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Academic-Reading-on-the-Go/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Academic-Reading-on-the-Go/pdf-collagev2.jpg" class="img-fluid figure-img"></p>
+<figcaption>Academic reading on the go</figcaption>
+</figure>
+</div>
+<p><br></p>
+<p>I love reading on my phone. Why? Because it is convenient. Books are great, but they usually require using both my hands, and that’s a lot of work. Even worse, I have to carry the book around. It’s been a long time since I walked around with a novel in my pocket in case I got bored. Reading on a computer is ok, but it’s not my favorite. I usually read e-books or html content like news and blogs on my phone. Keeping up with the latest archaeology articles and books is a lot harder though. I often feel like I should be spending a lot more time keeping up with the ever-growing literature. Academic books aren’t very portable, but most of my reading is done with pdfs. For a format that is literally called a “portable document format,” pdfs aren’t that easy to read on a phone. Apparently I’m not alone in thinking this:</p>
+<blockquote class="blockquote">
+<p>Reading documents — particularly PDFs — on mobile has never been a stellar experience. According to Adobe’s own research, 65% of people in the U.S. find it frustrating and 45% stopped reading or didn’t try [1].</p>
+</blockquote>
+<p>I’m writing this because I’ve found that if it is too much of a pain to read an article on my phone, then I usually won’t do it unless I have to. This brings me to Adobe’s liquid mode on their mobile Acrobat Reader app. I love Adobe’s products and am lucky to have a subscription but this feature is fortunately free for those who do not have an Adobe subscription.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Academic-Reading-on-the-Go/standardPDFview.jpg" class="img-fluid figure-img"></p>
+<figcaption>standard PDF view</figcaption>
+</figure>
+</div>
+<p>I usually will try to read a pdf in landscape view to try and maximize the screen, but moving your eyes this much slows down reading a lot. Liquid mode is an option at the top of the app that uses Adobe’s Sensei AI to try to convert the pdf to what is essentially an e-book view.</p>
+<p>Now I can adjust the text size however I want and view an autogenerated table of contents for navigation. Even the figures and references look nicely formatted.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Academic-Reading-on-the-Go/liquidModeView.jpg" class="img-fluid figure-img" width="300"></p>
+<figcaption>Liquid mode view</figcaption>
+</figure>
+</div>
+<p>As with everything, there are some limitations. Large files aren’t supported (200 pages is what the app currently says). Scanned pdfs usually don’t work either. I’ve been pleasantly surprised with how well it works, but there are still plenty of formatting issues where text appears out of place or bullet points are improperly located.</p>
+<p>It’s easier though if we don’t have to deal with pdfs in the first place. Many publishers offer html versions of their journal articles. I love this for open source articles but I am hesitant for publishers that require a subscription. First, I have to log in through my institution to even get to the article, which can sometimes be quite the pain. Second, I’m worried I’ll lose access to the article so I just download the pdf anyway.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Academic-Reading-on-the-Go/LiquidModeExamples.jpg" class="img-fluid figure-img"></p>
+<figcaption>Liquid mode examples</figcaption>
+</figure>
+</div>
+<p>I’m a big fan of open source, and I love the idea of preprints. My <a href="https://osf.io/preprints/socarxiv/dwrba/">first preprint</a> is now online, but one problem with the preprint server is that I have to upload a pdf. Liquid mode is one solution to this problem, but I wanted to try to improve the reading experience for my preprint. In the abstract of the preprint I placed a <a href="https://bischrob.github.io/Rosegate-Projectile-Points-in-the-Fremont-Region/">link</a> to a <a href="https://bookdown.org/">bookdown</a> version of the combined article and supplemental files. Bookdown is a way to write books or articles that can be converted to html, pdf, or epub formats. This was my first attempt at using bookdown and I ran into a few problems, but overall I think it is a great way to improve mobile access.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Academic-Reading-on-the-Go/bookdownVersion.jpg" class="img-fluid figure-img" width="250"></p>
+<figcaption>Bookdown version</figcaption>
+</figure>
+</div>
+<p>Bookdown allows you to easily navigate the document, download a pdf or epub version, change the text size, and even change to sepia or night mode.</p>
+<p>I am a big fan of liquid mode and I’ve already used it to increase my reading productivity, but I also want to encourage authors to consider ease of access in their publishing. Reducing mobile phone usage is a worthy goal, but so is reading the latest preprints while waiting in line at the grocery store.</p>
+<p>Let me know in the comments or via <a href="mailto:bischrob@gmail.com">email</a> if you have any tips for reading productively.</p>
+<p><br></p>
+<hr>
+<p><sup>1</sup> Wiggers, Kyle 2020 Adobe’s Liquid Mode Leverages AI to Reformat PDFs for Mobile Devices. <em>VentureBeat</em>. <a href="https://venturebeat.com/2020/09/23/adobes-liquid-mode-leverages-ai-to-reformat-pdfs-for-mobile-devices/," class="uri">https://venturebeat.com/2020/09/23/adobes-liquid-mode-leverages-ai-to-reformat-pdfs-for-mobile-devices/,</a> accessed May 8, 2021.</p>
+
+
+
+ ]]></description>
+  <category>productivity</category>
+  <guid>https://bischrob.github.io/posts/Academic-Reading-on-the-Go/post.html</guid>
+  <pubDate>Sat, 08 May 2021 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Why I like R — web scraping and the NBA playoffs</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/why-I-like-R/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Learning <a href="https://www.r-project.org/"><strong><em>R</em></strong></a> has been fun for a number of reasons for me. One is simply that I find programming fun. It’s like solving puzzles for me. Sure there’s a lot of frustration involved, but I find it worthwhile. R has been fun because I love numbers and it’s designed for statistics. Another passion is efficiency. I don’t like to do things by hand if I have to, and I love to automate things. Today I wanted to demonstrate some of the possibilities R has to offer. Instead of something archaeology related, I’ll talk about another passion of mine–sports.</p>
+<p>The NBA playoffs are about to start and my beloved Utah Jazz are racing for the number one seed. I frequently check <a href="https://projects.fivethirtyeight.com/2021-nba-predictions/">fivethirtyeight’s</a> and <a href="https://www.espn.com/nba/story/_/page/BPI-Playoff-Odds/espn-nba-basketball-power-index-playoff-odds">ESPN’s</a> playoff predictions. These are great, but they don’t show the odds of ending up in a particular playoff spot. I decided to sit down and see if I could calculate the odds before the game against Golden State ended tonight.</p>
+<p>If you’re not interested in the code, then skip to the end, and I’ll tell you the numbers. This isn’t an introduction to R, it’s more me showing some of the capabilities of R. The great thing is, you can adapt this code to see the odds your team hits a certain number of wins.</p>
+<p>First I love the tidyverse, which is a collection of packages that make R easier to use and understand. I also like some of the features of the magrittr package that aren’t loaded with the tidyverse packages. Rvest is a package to scrape the web, and lubridate is a great package for working with dates.</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(magrittr)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span></code></pre></div>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.1.0     v dplyr   1.0.5
+## v tidyr   1.1.3     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x tidyr::extract()   masks magrittr::extract()
+## x dplyr::filter()    masks stats::filter()
+## x dplyr::lag()       masks stats::lag()
+## x purrr::set_names() masks magrittr::set_names()</code></pre>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rvest)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: 'rvest'</code></pre>
+<pre><code>## The following object is masked from 'package:readr':
+## 
+##     guess_encoding</code></pre>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(lubridate)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: 'lubridate'</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     date, intersect, setdiff, union</code></pre>
+<p>I decided to use ESPN’s BPI game odds. These are adjusted with lots of variables and are decently accurate.</p>
+<p>First, I grabbed the Utah Jazz schedule.</p>
+<p>There’s only one table on the page so it wasn’t hard to access, but I did have to clean up the data a little bit due to a postponed game and an extra header row. I originally filtered those values here, but I needed the original values for the next section.</p>
+<p>Next, I had to get the links to each remaining game so I could pull the odds of winning.</p>
+<p>The <code>%&lt;&gt;%</code> function is one of my favorites as it takes whatever is on the left, uses it in the function to the right and also assigns the result of the function back to that variable. Thus I can save the typing for <code>schedule = schedule %&gt;%</code> and it makes it easy to test code before saving it to a variable by just using <code>%&gt;%</code> for the test and then adding in the last <code>&lt;</code> symbol once I have it right.</p>
+<p>I won’t describe what <strong><em>xpaths</em></strong> are in detail, but they can be used to identify specific elements on a page. The table rows match up to the <code>xpath</code> so I can get all of the links to the individual games by just changing what is essentially the row number. This was easier to do before the game started, but afterwards the link disappeared, so I had to find a workaround that works more consistently.</p>
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">url <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://www.espn.com/nba/team/schedule/_/name/utah"</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb11-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_html</span>()</span>
+<span id="cb11-3"></span>
+<span id="cb11-4">schedule <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> url <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb11-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_node</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"table"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb11-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_table</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">header =</span> T)</span>
+<span id="cb11-7"></span>
+<span id="cb11-8">gameIDs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nrow</span>(schedule),<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb11-9">  xpath <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'//*[@id="fittPageContainer"]/div[2]/div[5]/div/div/section/div/section/section/div/div/div/div[2]/table/tbody/tr['</span>,.x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">']/td[3]/span/a'</span>)</span>
+<span id="cb11-10">url <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb11-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_elements</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xpath =</span> xpath) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb11-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_attr</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"href"</span>)</span>
+<span id="cb11-13">})</span>
+<span id="cb11-14">schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span></span>
+<span id="cb11-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">gameID =</span> gameIDs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb11-16">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(DATE <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'DATE'</span>,RESULT <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Postponed'</span>)</span></code></pre></div>
+<p>Next, I identified the remaining games. There are a few ways to do this, but I decided to get complicated and convert the date in the schedule table to a real date so I could filter for games today and later. It might be better to just filter for games that are not completed, but this way shows how R can be used for time series.</p>
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> </span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate_at</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vars</span>(DATE),<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>.x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb12-3">                              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove_all</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"^.*?,"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb12-4">                              trimws <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb12-5">                              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parse_date_time</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Om d"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb12-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">DATE =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">month</span>(DATE) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year&lt;-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>(DATE, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2020</span>),</span>
+<span id="cb12-7">                          <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year&lt;-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>(DATE, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2021</span>)))</span>
+<span id="cb12-8"></span>
+<span id="cb12-9">remaining <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb12-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(DATE <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>())</span></code></pre></div>
+<p>Next, I used a <strong><em>purrr map</em></strong> function to go through each game link and get the odds of winning for the home team. I then calculated the Jazz odds of winning by determining who was the home team and inverting the odds if necessary. Because I ran this during a game the game link was missing so I used the invalidate function from <strong><em>gtools</em></strong> to add in the odds for tonight. I haven’t used this function much but it seems a good catchall for values that are problematic (e.g., null,NA, or empty values).</p>
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">remaining <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> </span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">HomePred =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map_chr</span>(gameID,<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb13-3">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span>(gtools<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">invalid</span>(.x)){</span>
+<span id="cb13-4">      result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'49%'</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># this was the odds pregame for Jazz vs Warriors</span></span>
+<span id="cb13-5">    } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb13-6">    xpath <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> </span>
+<span id="cb13-7">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'//*[@id="gamepackage-predictor"]/div/div/div[1]/div[1]/div/div/span[1]'</span></span>
+<span id="cb13-8">    result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> .x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_html</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_node</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xpath =</span> xpath) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_text</span>()</span>
+<span id="cb13-9">    }</span>
+<span id="cb13-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(result)</span>
+<span id="cb13-11">  })) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate_at</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vars</span>(HomePred),<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>.x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb13-13">                                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sub</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>,.) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb13-14">                                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.double</span>())) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb13-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">WinPer =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_detect</span>(OPPONENT,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"@"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>HomePred)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,</span>
+<span id="cb13-16">                            <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>HomePred<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>))</span></code></pre></div>
+<p>Last, I created a function to simulate the remaining wins using 1 as a win and zero as a loss and replicated that function 10,000 times. The simulation went fairly quickly on my computer, and I used the nice and simple <strong><em>tictoc</em></strong> package to show the time elapsed.</p>
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">predictWins <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probs =</span> remaining<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>WinPer){</span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map_int</span>(probs,<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb14-3">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(.x,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>.x)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> sum</span>
+<span id="cb14-4">  }) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> sum</span>
+<span id="cb14-5">}</span>
+<span id="cb14-6"></span>
+<span id="cb14-7">tictoc<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tic</span>()</span>
+<span id="cb14-8">sims <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">replicate</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10000</span>,<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predictWins</span>(remaining<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>WinPer))</span>
+<span id="cb14-9">tictoc<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">toc</span>()</span></code></pre></div>
+<pre><code>## 1.14 sec elapsed</code></pre>
+<p>With these results I could look at the odds Utah wins its remaining games.</p>
+<div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">table</span>(sims))</span></code></pre></div>
+<pre><code>## sims
+##      0      1      2      3      4 
+## 0.0085 0.0873 0.2913 0.4208 0.1921</code></pre>
+<p>The Phoenix Suns are closing in on the Jazz. I could run the above code again but substituting the Phoenix Suns schedule url for the Jazz url. As a general rule, copying and pasting code is a bad idea. If I have to fix something in the code, then I have to fix it in multiple places. Instead I can turn everything I did into a function.</p>
+<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">predictRemaining <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(team){</span>
+<span id="cb18-2">  </span>
+<span id="cb18-3">url <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> glue<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://www.espn.com/nba/team/schedule/_/name/{team}"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_html</span>()</span>
+<span id="cb18-5"></span>
+<span id="cb18-6">schedule <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> url <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb18-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_node</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"table"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb18-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_table</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">header =</span> T)</span>
+<span id="cb18-9"></span>
+<span id="cb18-10">gameIDs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">nrow</span>(schedule),<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb18-11">  xpath <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'//*[@id="fittPageContainer"]/div[2]/div[5]/div/div/section/div/section/section/div/div/div/div[2]/table/tbody/tr['</span>,.x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">']/td[3]/span/a'</span>)</span>
+<span id="cb18-12">url <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_elements</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xpath =</span> xpath) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_attr</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"href"</span>)</span>
+<span id="cb18-15">})</span>
+<span id="cb18-16">schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span></span>
+<span id="cb18-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">gameID =</span> gameIDs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(DATE <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'DATE'</span>,RESULT <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Postponed'</span>)</span>
+<span id="cb18-19"></span>
+<span id="cb18-20">schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> </span>
+<span id="cb18-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate_at</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vars</span>(DATE),<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>.x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-22">                              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove_all</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"^.*?,"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb18-23">                              trimws <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-24">                              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parse_date_time</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Om d"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">DATE =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">month</span>(DATE) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year&lt;-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>(DATE, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2020</span>),</span>
+<span id="cb18-26">                          <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year&lt;-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>(DATE, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2021</span>)))</span>
+<span id="cb18-27"></span>
+<span id="cb18-28">remaining <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> schedule <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-29">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(DATE <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>())</span>
+<span id="cb18-30"></span>
+<span id="cb18-31">remaining <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> </span>
+<span id="cb18-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">HomePred =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map_chr</span>(gameID,<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb18-33">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span>(gtools<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">invalid</span>(.x)){</span>
+<span id="cb18-34">      result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'49%'</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># this was the odds pregame for Jazz vs Warriors</span></span>
+<span id="cb18-35">    } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb18-36">    xpath <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> </span>
+<span id="cb18-37">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'//*[@id="gamepackage-predictor"]/div/div/div[1]/div[1]/div/div/span[1]'</span></span>
+<span id="cb18-38">    result <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> .x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_html</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_node</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xpath =</span> xpath) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">html_text</span>()</span>
+<span id="cb18-39">    }</span>
+<span id="cb18-40">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(result)</span>
+<span id="cb18-41">  })) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-42">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate_at</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">vars</span>(HomePred),<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>.x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb18-43">                                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sub</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>,.) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb18-44">                                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.double</span>())) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb18-45">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">WinPer =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_detect</span>(OPPONENT,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"@"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>HomePred)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,</span>
+<span id="cb18-46">                            <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>HomePred<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>))</span>
+<span id="cb18-47"></span>
+<span id="cb18-48">predictWins <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">probs =</span> remaining<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>WinPer){</span>
+<span id="cb18-49">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map_int</span>(probs,<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>{</span>
+<span id="cb18-50">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sample</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> T,<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(.x,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>.x)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> sum</span>
+<span id="cb18-51">  }) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> sum</span>
+<span id="cb18-52">}</span>
+<span id="cb18-53"></span>
+<span id="cb18-54">sims <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">replicate</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10000</span>,<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predictWins</span>(remaining<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>WinPer))</span>
+<span id="cb18-55">  </span>
+<span id="cb18-56">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">schedule =</span> schedule, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">remaining =</span> remaining, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sims =</span> sims))</span>
+<span id="cb18-57">}</span></code></pre></div>
+<p>With this function I can simplify the code and compare the results.</p>
+<div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">utah <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predictRemaining</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"utah"</span>)</span>
+<span id="cb19-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">startsWith</span>(utah<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>schedule<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>RESULT,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"W"</span>))</span></code></pre></div>
+<pre><code>## [1] 50</code></pre>
+<div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">table</span>(utah<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sims))</span></code></pre></div>
+<pre><code>## 
+##      0      1      2      3      4 
+## 0.0087 0.0856 0.3047 0.4127 0.1883</code></pre>
+<div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">phoenix <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predictRemaining</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"phoenix"</span>)</span>
+<span id="cb23-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">startsWith</span>(phoenix<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>schedule<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>RESULT,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"W"</span>))</span></code></pre></div>
+<pre><code>## [1] 48</code></pre>
+<div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">table</span>(phoenix<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sims))</span></code></pre></div>
+<pre><code>## 
+##      0      1      2      3      4 
+## 0.0094 0.0984 0.3198 0.4024 0.1700</code></pre>
+<p>If Utah wins zero more games then the Suns have a 0.89 chance of getting the one seed.</p>
+<p>If Utah wins one more game then the Suns have a 0.57 chance of getting the one seed.</p>
+<p>If Utah wins two more games then the Suns have a 0.17 chance of getting the one seed.</p>
+<p>The odds of Utah winning two or more games is 0.91 chance of getting the one seed.</p>
+<p>I can calculate the total odds of the Jazz getting the number one seed like by adding two to the Jazz total as that is the current lead. The Suns have the tiebreaker though.</p>
+<div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">adj <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> utah<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sims <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb27-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(phoenix<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sims <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> adj) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(phoenix<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>sims),<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span></code></pre></div>
+<pre><code>## [1] 0.89</code></pre>
+<p>The result is that the Utah Jazz have a 0.89 chance of getting the number one seed. This is pretty close to what I found <a href="https://www.deseret.com/2021/5/10/22429307/what-do-the-utah-jazz-have-left-to-do-to-get-the-no-1-seed-in-the-western-conference-nba-playoffs">elsewhere</a> and good news personally.</p>
+<p>The great thing is I can rerun this code whenever I want and it should work. Of course, that doesn’t always work as intended but at least I learn some new skills every time I encounter a problem. I’ve used R for a few years now, but I still visited eleven different stack overflow questions just to write this.</p>
+
+
+
+ ]]></description>
+  <category>tutorial</category>
+  <category>sports</category>
+  <category>R</category>
+  <guid>https://bischrob.github.io/posts/why-I-like-R/post.html</guid>
+  <pubDate>Sat, 08 May 2021 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Making Image Mosaics in R</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>I had the idea to make my dad an image mosaic of his grandkids for Father’s day. My immediate thought was to check if R had a package for that–and it does. The <code>RsimMosaic</code> package is a great tool for making image mosaics. Combined with the <code>magick</code> package, I have all the tools I need. While I think the picture of my dad turned out great, I decided to make an archaeology related mosaic for this post.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/PuebloBonitoMosaicSmall.jpg" class="img-fluid figure-img"></p>
+<figcaption>Mosaic Small</figcaption>
+</figure>
+</div>
+<p>The first step was to gather the photos. The more photos the better. My wife and I use Google Photos to store all of our pictures, so I searched the term <em>archaeology</em> within my photo account and used Google’s AI to make my life easier. I downloaded more than 1,000 photographs that matched this term. Not every picture was archaeology related, but it did a fairly good job. I only removed a few pictures that didn’t fit.</p>
+<p>I also use <code>tidyverse</code> which is standard for me and <code>magrittr</code>, as I like some of the pipes not included in <code>tidyverse</code>. The <code>tictoc</code> package is a great little package for keeping track of elapsed time. Base R can take care of a lot of the functions in these packages, but I find them more convenient and easier to follow. The magick package sometimes has a problem with memory management when communicating with imagemagick, but the development version of the package has an <code>image_destroy</code> function that helps.</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># libraries used</span></span>
+<span id="cb1-2">remotes<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install_github</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ropensci/magick'</span>)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(RsimMosaic)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(magrittr)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(magick)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tictoc)</span></code></pre></div>
+<p>As my photos were zipped, I used R to unzip them (why not use R for everything, right?). I use the <code>walk</code> function from <code>purrr</code> as it doesn’t return any results. I have the photos stored in a subdirectory called <em>Photos</em>.</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># photos are zipped; list files and unzip them</span></span>
+<span id="cb2-2">lfZip <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list.files</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Photos"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">full.names =</span> T, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'zip'</span>)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># use walk from purrr to unzip folders</span></span>
+<span id="cb2-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">walk</span>(lfZip, unzip, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">exdir =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Photos'</span>)</span>
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># list all photos</span></span>
+<span id="cb2-8">lf <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list.files</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Photos"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'jpg'</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">full.names =</span> T)</span></code></pre></div>
+<p>The biggest problem with the image mosaic is that all of the images have to be square. I don’t know about you, but I don’t take many square photos. <code>RsimMosaic</code> does have a <code>createTiles</code> function, but as the help file notes, the interpolation scheme does not produce high quality images. I wrote my own function to generate square tiles and again I used <code>walk</code> to save the results. The function crops photos in the middle, depending on whether it is a landscape or portrait orientation.</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create new directory to save results</span></span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dir.create</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Tiles'</span>)</span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># function to create square tiles</span></span>
+<span id="cb3-5">squareTiles <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(.x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>){</span>
+<span id="cb3-6">  img <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_read</span>(.x)</span>
+<span id="cb3-7">  info <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> img <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> image_info</span>
+<span id="cb3-8">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span>(info<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>width <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> info<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>height){</span>
+<span id="cb3-9">    img <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_scale</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_glue</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'x{size}'</span>))</span>
+<span id="cb3-10">    img <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb3-11">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_crop</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_glue</span>(</span>
+<span id="cb3-12">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'{size}x{size}+{(image_info(img)$width - {size}) / 2}+0'</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb3-13">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_write</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_replace_all</span>(.x,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Photos'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Tiles'</span>))</span>
+<span id="cb3-14">  } <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> {</span>
+<span id="cb3-15">    img <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&lt;&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_scale</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_glue</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'{size}'</span>))</span>
+<span id="cb3-16">    img <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb3-17">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_crop</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_glue</span>(</span>
+<span id="cb3-18">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'{size}x{size}+0+{(image_info(img)$height - {size}) / 2}'</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb3-19">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_write</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_replace_all</span>(.x,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Photos'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Tiles'</span>))</span>
+<span id="cb3-20">  }</span>
+<span id="cb3-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_destroy</span>(img) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># prevent memory problems</span></span>
+<span id="cb3-22">}</span>
+<span id="cb3-23"></span>
+<span id="cb3-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># run function</span></span>
+<span id="cb3-25"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tic</span>()</span>
+<span id="cb3-26"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">walk</span>(lf, squareTiles)</span>
+<span id="cb3-27"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">toc</span>()</span>
+<span id="cb3-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 4837.13 sec elapsed</span></span></code></pre></div>
+<p>It took my computer 4837 seconds (<code>r round(4837 / 60,2)</code> hours) to run for all 1,486 pictures. Maybe I downloaded too many, but this is going to be a lengthy process.</p>
+<p>Here’s a comparison of two 60-pixel images, the first is from the <code>createTiles</code> function, and the second is from the custom function. <code>Magick</code> is the clear winner.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">createTiles</th>
+<th style="text-align: center;">magick</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/createTiles.jpg" height="180"></td>
+<td style="text-align: center;"><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/magick.jpg" height="180"></td>
+</tr>
+</tbody>
+</table>
+<p>Once the tiles were ready, finally. I picked one of the photos, a picture of <a href="https://en.wikipedia.org/wiki/Pueblo_Bonito">Pueblo Bonito</a>, and converted it to a smaller size. Each pixel in the input image will be replaced by a 60-pixel tile, which means the resulting image is huge unless you use a very small pixel value. I’m going for big, but not too big.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/PuebloBonitoOriginal.jpg" class="img-fluid figure-img"></p>
+<figcaption>Pueblo Bonito</figcaption>
+</figure>
+</div>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_read</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Photos/20171006_135349.jpg'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_scale</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'250'</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">image_write</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'PuebloBonito.jpg'</span>)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the mosaic</span></span>
+<span id="cb4-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tic</span>()</span>
+<span id="cb4-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">composeMosaicFromImageRandom</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'PuebloBonito.jpg'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'PuebloBonitoMosaic.jpg'</span>,</span>
+<span id="cb4-7">                             <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 'Tiles', removeTiles=FALSE)</span></span>
+<span id="cb4-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">toc</span>()</span>
+<span id="cb4-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 93.66 sec elapsed</span></span></code></pre></div>
+<p>Note in case you run across this: When I ran this function the first time it failed. I did some investigation and determined that a handful of photos were saved with an 8 bit depth and the other were 24 bit depth. As there were only a few, I just removed them and proceeded.</p>
+<p>The result is cool if you zoom in, but doesn’t look all that great. A good way to improve the look is to overlay the original photo with a 50% opacity. I also wanted to increase the contrast. I do love Photoshop and it can easily be done that route, but I think I said something about doing it all in R, so here we go.</p>
+<p>(Warning: the following images may take a long time to load)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/PuebloBonitoMosaic.jpg" class="img-fluid figure-img"></p>
+<figcaption>Pueblo Bonito Mosaic</figcaption>
+</figure>
+</div>
+<p>Increasing contrast is not difficult, but the opacity problem is more challenging. There is no native way in the <code>magick</code> package to change the background opacity, and because it is a jpg image, the color scheme is <em>rgb</em> when it needs to be <em>rgba</em>. The hack I used is to make all white pixels transparent on the original photo, which doesn’t really change the picture but does change it to <em>rgba</em>. I then modified the bitmap directly by multiplying it by 0.5. Then the images can be combined and saved to produce the final result.</p>
+<pre><code>original &lt;- image_read('Photos/20171006_135349.jpg')
+mosaic &lt;- image_read('PuebloBonitoMosaic.jpg') %&gt;%
+  image_contrast() # increase contrast
+inf &lt;- mosaic %&gt;% image_info
+original %&lt;&gt;% image_scale(str_glue('{inf$width}x{inf$height}!')) %&gt;%
+  image_transparent('white')
+bitmap &lt;- original[[1]]
+bitmap[4,,] &lt;- as.raw(as.integer(bitmap[4,,]) * 0.5)
+original &lt;- image_read(bitmap)
+original &lt;- c(mosaic, original) %&gt;% image_flatten()
+image_write(original, 'PuebloBonitoMosaicMod.jpg', quality = 80)</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/PuebloBonitoMosaicMod.jpg" class="img-fluid figure-img"></p>
+<figcaption>Pueblo Bonito Overlay</figcaption>
+</figure>
+</div>
+<p>It’s not perfect, but there are a lot of ways to tweak it to improve the result. Changing the opacity, and pixel sizes will make the biggest difference. Let me know if you have any ideas on how to improve this code, and I hope you have some fun making mosaics of your dogs, cats, or whatever you love.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/post.html</guid>
+  <pubDate>Tue, 30 Jun 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Automatic Background Removal</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>There are a few different ways to automatically mask backgrounds when making a 3D model using photogrammetry, but I’ve struggled to find a method that worked for what I was doing. <a href="https://theblog.adobe.com/photoshop-releases-version-19-1-selections-improvements-advanced-support-windows-high-density-monitors/?red=a">Photoshop</a> released a new AI feature to automatically select the subject of an image. This post explores how this tool can be used to mask unwanted background features when creating 3D models using photogrammetry. This is not a photogrammetry tutorial, and I assume a basic familarity with Metashape (formerly Photoscan), the software I use for photogrammetry.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/SmallSeedJar.jpg" class="img-fluid figure-img" width="350"></p>
+<figcaption>Small seed jar</figcaption>
+</figure>
+</div>
+<p>My standard process when creating a 360° 3D model of an object is to create a black and white mask of each image by using Photoshop’s <em>Quick Selection Tool</em>, or other selection tools when necessary, to select the object, make it white, and then make everything else black. I use Metashape’s create mask from file option to automatically apply each mask to its corresponding image. This is usually the part of my workflow that requires the most work from me. Running the model can take longer, but I don’t need to do much. Photoshop action scripts speed up the process of making a mask, as I can record the actions to make the image black and white once I’ve selected the object.</p>
+<p>I’ve used a similar process to automatically create masks using the new <em>select subject</em> option. Spoiler, the results aren’t as good as doing it by hand, but we’re not quite living in the AI world of my dreams yet.</p>
+<p>You’ll need at least Photoshop version 19.1 (I’m using version 20.0.4). It helps to be familiar with Photoshop, and I recommend looking up some basic tutorials if you are not familiar with it.</p>
+<p>The model I’ll be making is of a small ceramic seed jar found on the surface of an archaeology site I was visiting in western New Mexico. I just had my smartphone on me (a Pixel XL 2), but I snapped several photos with the jar sitting on the ground, and then I held the jar in my hand and rotated it. This should be a challenging test. I didn’t have much time and the lighting was not great. Having my hand in many of the photos should be the most challenging aspect to remove automatically.</p>
+<section id="create-photoshop-action" class="level2">
+<h2 class="anchored" data-anchor-id="create-photoshop-action">Create Photoshop Action</h2>
+<p>The first thing to do is to make a copy of all of the photos you’ll be using and place them in a new folder labeled masks. Open one of these images in Photoshop. Access the <em>Actions</em> menu by pressing <em>F9</em>, and press the <em>Create new action</em> button.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/NewAction.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>New action</figcaption>
+</figure>
+</div>
+<p>I named my action <em>Automatic Mask</em>. Press the <em>Record</em> button and now Photoshop will keep track of everything we do. Press <em>w</em> to access the <em>Quick Selection Tool</em> and you should see the <em>Select Subject</em> button at the top of the screen.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/SelectSubject.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>Select subject</figcaption>
+</figure>
+</div>
+<p>Press that button and you should see the most prominent object selected. The selection worked fairly well. It’s not surprising the out of focus ground was removed, but I wasn’t sure that my hand would be left out of the selection.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/SelectSubjectResults.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>Select subject results</figcaption>
+</figure>
+</div>
+<p>Now go to <em>Edit&gt;Fill</em> and make sure the <em>Content</em> is white, the <em>Blending Mode</em> is <em>Normal</em>, and the <em>Opacity</em> is 100%. Press <em>Ok</em> and the object should be white. Now invert the selection by pressing <em>Ctrl+Shift+I</em>, and repeat the <em>Edit&gt;Fill</em> process except this time choose black. You should now have a black and white mask.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/BlackandWhiteMask.png" class="img-fluid figure-img" width="200"></p>
+<figcaption>Black and white mask</figcaption>
+</figure>
+</div>
+<p>Just save the image and then close it. Make sure those two actions are separate as we are recording them and for some reason closing and saving at the same time doesn’t work well. We are still recording, so open the image again, access the <em>Actions</em> menu and press the <em>Stop recording</em> button. You’ll then have to delete the <em>Open</em> step. If you cannot see the steps in the action then click the dropdown arrow next to the action name. Select <em>Open</em> and press the <em>Delete</em> button. You should see six steps once you’re done.</p>
+<ol type="1">
+<li>Select Subject</li>
+<li>Fill</li>
+<li>Inverse</li>
+<li>Fill</li>
+<li>Save</li>
+<li>Close</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/DeleteOpenStep.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>Delete open step</figcaption>
+</figure>
+</div>
+<p>Now close the image again.</p>
+</section>
+<section id="run-the-action" class="level2">
+<h2 class="anchored" data-anchor-id="run-the-action">Run the Action</h2>
+<p>Photoshop allows you to run the action on each photo in a folder automatically. Go to <em>File&gt;Automate&gt;Batch</em>. The last action you made should automatically be selected, but select your action if it is not already. Choose the folder you saved the images in (make sure it is the folder for masks, not the original images (make sure you have backups just in case). The <em>Destination</em> should be <em>Save and Close</em>, and the <em>Override Action “Save As” Commands</em> box should be checked. Press <em>Ok</em> and it will repeat this action for every image. <img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/BatchProcess.png" class="img-fluid" width="350" alt="Batch process"></p>
+<p>Now each image should be a black and white mask. You can see that not every one of these images was perfectly masked, but you can see from the model I made that the masks worked well enough, and this process saved me a lot of time.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/MasksResults.png" class="img-fluid figure-img" width="350"></p>
+<figcaption>Mask results</figcaption>
+</figure>
+</div>
+</section>
+<section id="the-model" class="level2">
+<h2 class="anchored" data-anchor-id="the-model">The Model</h2>
+<p>It’s not a perfect model, but I’ve never tried to make a model from an object held in my hand before, so I’ll call this a good result for the circumstances. Feel free to comment if you found this useful or if you have some tips on improvements or a better process.</p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="680" height="480px" src="https://sketchfab.com/models/6c6e3be3548144f38d1add003c7774b0/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/3d-models/small-seed-jar-6c6e3be3548144f38d1add003c7774b0?utm_medium=embed&amp;utm_source=website&amp;utm_campaign=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Small Seed Jar</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campaign=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campaign=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>3D-Models</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/post.html</guid>
+  <pubDate>Thu, 16 May 2019 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Size 3D Models in Blender</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Size 3D Models in Blender/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>This tutorial demonstrates how to accurately size a 3D model using the open source software <a href="https://www.blender.org/">Blender</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/Measuring.png" class="img-fluid figure-img"></p>
+<figcaption>Size 3D Models in Blender</figcaption>
+</figure>
+</div>
+<p>You will need a 3D model in a common file format (I use OBJs) and the measurement of the longest axis of the object. Once you become familiar with this process it will only take a couple minutes to complete.</p>
+<p>3D models are great for measurements that are difficult to obtain from physical objects, but first the 3D model itself must be the right size. Many laser scanners or structured-light scanners automatically scale the object, but often models created using photogrammetry lack a true scale. Whatever the reason you need a 3D object scaled to the right size, this tutorial will show you a simple method using Blender.</p>
+<p>I’ve chosen Blender as it is free and comes with no restrictions. The software can be used to create an animated movie from scratch or design a 3D game, but it can be overwhelming at first. Blender has a large community and many free tutorials if you would like to become more familiar with the basics or expand your knowledge. This tutorial is designed for the Blender beginner, but I generally will only cover Blender basics related to this process.</p>
+<section id="step-1---remove-cube" class="level2">
+<h2 class="anchored" data-anchor-id="step-1---remove-cube">Step 1 - Remove cube</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/DeleteCube.png" class="img-fluid figure-img"></p>
+<figcaption>Reside 3D Models in Blender</figcaption>
+</figure>
+</div>
+<p>If you have the default setup for Blender, then the first step is to remove the default cube. This is done by first selecting the object. Right click on the cube and it will be outlined in orange. Then, with the mouse inside the <em>3D View</em> window (keyboard shortcuts only work if the mouse is hovering in the right area), press <em>X</em> or the delete key. A menu will appear, click delete.</p>
+</section>
+<section id="step-2---import-3d-model" class="level2">
+<h2 class="anchored" data-anchor-id="step-2---import-3d-model">Step 2 - Import 3D model</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/ImportCropped.png" class="img-fluid figure-img"></p>
+<figcaption>Resize 3D Models in Blender</figcaption>
+</figure>
+</div>
+<p>The next step is to import the 3D model (this tutorial uses OBJ, but is similar for other file types). Select the following from the menu: File→Import→Wavefront (.obj).</p>
+<p>Warning! it make take some time to load if the model is large (you may consider decimating the model in the program used to create it or by using Blender itself).</p>
+</section>
+<section id="step-3---adjust-orientation" class="level2">
+<h2 class="anchored" data-anchor-id="step-3---adjust-orientation">Step 3 - Adjust orientation</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/Importedobject.png" class="img-fluid figure-img"></p>
+<figcaption>Imported object</figcaption>
+</figure>
+</div>
+<p>Once the object is loaded it should appear in the view screen. Occasionally the object will not be visible, either due to its small size or that the 3D model is located far from the <a href="https://docs.blender.org/manual/en/dev/editors/3dview/object/origin.html">origin</a>. The easiest way to find the model is to press <strong>.</strong> on the numpad (note that only the numpad can be used for navigation unless changed in the Blender settings). Another method is to use the toolbar on the bottom of the <em>3D View</em> window (the lowest screen is defaulted to the timeline window and selections from this toolbar will not affect the 3D view; see a general Blender tutorial for more details). Select <em>View→Align View→View</em> selected to view the object. This only works on the selected object. Another way to select an object is to use the <em>Outliner</em> window located in the top right of the default window. Any object in this window can be selected by left-clicking it.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/Origin2Geometry.png" class="img-fluid figure-img"></p>
+<figcaption>Origin to Geometry</figcaption>
+</figure>
+</div>
+<p>If the imported object looks correct, then next we adjust the origin to make the object easier to manage (assuming the 3D model isn’t tied to a meaningful origin point [it usually isn’t]). The orientation of the selected object can be changed using the <em>Tool Shelf</em>. This panel can be viewed/hidden by pressing <em>T</em> on the keyboard. The first tab on the <em>Tool Shelf</em> is labeled <em>Tools</em>. Select <em>set origin</em> and a menu will appear. Select the first option (<em>Geometry to Origin</em>). This will move the object to the center (use <strong>.</strong> on the numpad to reorient the <em>3D Viewer</em>).</p>
+<p>Next we will rotate the object. This step is critical as the orientation of the object will be used for sizing the object. <em>R</em> on the keyboard is used to rotate the object. I find it easiest to rotate one axis at a time. Limit the rotation by pressing <em>R</em> and then <em>X</em>, <em>Y</em>, or <em>Z</em>. There is no need to hold down keys when executing sequences on the keyboard. Simply press <em>R</em> once, then press <em>X</em> once. Changing the view will help with orienting the object. First change the view to ortho by pressing <em>5</em> on the numpad (while I will be using keyboard shortcuts the corresponding navigation options are under the <em>View</em> menu at the bottom of the <em>3D View</em> screen). Next, move to <em>Front</em> view by pressing <em>1</em> on the numpad. Rotate the object using the keyboard shortcuts above until the objects looks as it should when viewed from the front. Move the mouse in a circle to rotate it and use the shift key to make fine adjustments. Repeat this step for the side view (3 on the numpad) and top view (7 on the numpad). You can view the opposite side by holding down <em>Ctrl</em>. For example, press <em>Ctrl-T</em> to see the bottom view. You may need to move between the views several times to properly orient the object. Remember to limit the rotation to one axis to avoid changing previously oriented axes. We will scale the object along its longest axis. To do this the longest axis must be aligned directly to the <em>X</em>, <em>Y</em>, or <em>Z</em> axis. I use the <em>Y</em> axis in this tutorial.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/LongestAxis.png" class="img-fluid figure-img"></p>
+<figcaption>Longest Axis</figcaption>
+</figure>
+</div>
+<p>In the above screenshot the edge of the object farthest above and below the <em>X</em> axis are directly aligned. The green line is the Y axis running through these points. The screenshot shows the top view (7 on the numpad). The <em>Y</em> axis is aligned with the location of the measurement taken from the physical object. The axis lines are a good way to align the model. Drag the arrows in the direction you want to move the object so the longest axis is aligned with the chosen axis (you can also move the object free-form by pressing <em>G</em> and then left-clicking to place the object).</p>
+<p>The last step in orienting the object is to apply the changes. Failing to apply the changes will mess up the next step. Press <em>Ctrl-A</em> and a menu will appear. Select <em>Rotation &amp; Scale</em>. I also like to apply the <em>Location</em> as well, although this is not necessary.</p>
+</section>
+<section id="step-4---scaling" class="level2">
+<h2 class="anchored" data-anchor-id="step-4---scaling">Step 4 - Scaling</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/ChangeSceneUnitscropped.png" class="img-fluid figure-img"></p>
+<figcaption>Change Scene Units</figcaption>
+</figure>
+</div>
+<p>Blender does not use real world measurements by default. To change this, first select <em>Scene</em> on the properties window located by default on the far right (the icon has a sun, globe, and cylinder). In the <em>Units</em> section select <em>Unit Presets</em> (as shown in the screenshot above) and select <em>Millimeters</em>. Any unit can be used if desired, but millimeter is the default unit for <em>STLs</em>, which is the most commonly used file type for 3D printing. After changing the scene unit the dimensions will now have <em>mm</em>.</p>
+<p>In the screenshot above the dimensions are shown in the <em>properties panel</em>. This is different from the <em>properties window</em> on the right (I know it’s confusing). If you do not see this tab press <em>N</em>. This panel has a lot of useful information about the selected object, and most of these attributes can be directly modified on this panel. The <em>Rotation</em> values should all be 0° and the scale values should all be 1. If this is not the case, then please see the last part of <strong>Step 3</strong>.</p>
+<p>To scale the object simply enter the measurement value <strong>in millimeters</strong> on the appropriate axis. In my example I have aligned the model so that my physical measurement is directly along the <em>Y</em> axis. The method I demonstrate only works if this is the maximum <em>Y</em> length. In my example, the <em>Y</em> axis is currently showing as 5.551 mm. If part of the model extends further along the Y axis then what I measured the scaling will be off.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Size 3D Models in Blender/Scaling.png" class="img-fluid figure-img"></p>
+<figcaption>Scaling</figcaption>
+</figure>
+</div>
+<p>In the above screenshot, I entered 24mm into the <em>Dimensions</em> box, which is the physical measurement I made. Note that this distorts the model. The <em>Scale</em> now reads 4.323 in the <em>Y</em> axis box. Copy and paste the <em>Y</em> scale to the <em>X</em> and <em>Z</em> boxes using the keyboard shortcuts <em>Ctrl-C</em> and <em>Ctrl-V</em>. You will see that the model is no longer distorted.</p>
+<p>The <strong>final</strong> step is to apply these changes. Press <em>Ctrl_A</em> and apply the <em>Scale</em>. The values in the <em>Scale</em> box will now read 1. Now any measurements made on this model will be correct.</p>
+<p>Next you may want to measure something. Here’s a link to get you started — <a href="https://docs.blender.org/manual/en/dev/interface/ruler_protractor.html">Ruler &amp; Protractor</a>.</p>
+<p>Thanks for reading the tutorial and feel free to comment below or <a href="mailto:bischrob@gmail.com">email me</a> if you have any questions, or if you have any suggestions on improving this process.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>3D-Models</category>
+  <category>tutorial</category>
+  <guid>https://bischrob.github.io/posts/Size 3D Models in Blender/post.html</guid>
+  <pubDate>Mon, 11 Jun 2018 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Pilling Figurines 3D Models</title>
+  <dc:creator>Robert J.Bischoff</dc:creator>
+  <link>https://bischrob.github.io/posts/Pilling Figurines 3D Models/post.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>I was recently able to photograph the Pilling Figurines and process the images into 3D models using Agisoft Photoscan.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://bischrob.github.io/posts/Pilling Figurines 3D Models/PillingFigurines.jpg" class="img-fluid figure-img"></p>
+<figcaption>Pilling Figurines</figcaption>
+</figure>
+</div>
+<p>The 12 Pilling Figurines are on display in the Utah State University Eastern <a href="usueastern.edu/museum">Prehistoric Museum</a> in Price, Utah. Thanks goes to Tim Riley and the museum for allowing access. These figurines and the rest of the museum is well worth the visit if you’re going through Price.</p>
+<section id="links-to-articles-discussing-the-pilling-figurines" class="level2">
+<h2 class="anchored" data-anchor-id="links-to-articles-discussing-the-pilling-figurines">Links to articles discussing the Pilling Figurines:</h2>
+<p><a href="https://en.wikipedia.org/wiki/Pilling_Figurines">https://en.wikipedia.org/wiki/Pilling_Figurines</a></p>
+<p><a href="http://etv10news.com/bud-pilling-shares-story-of-rare-discovery-of-fremont-artifacts/">http://etv10news.com/bud-pilling-shares-story-of-rare-discovery-of-fremont-artifacts/</a></p>
+<p><a href="http://archive.sltrib.com/article.php?id=53879624&amp;itype=CMSID">http://archive.sltrib.com/article.php?id=53879624&amp;itype=CMSID</a></p>
+</section>
+<section id="d-models" class="level2">
+<h2 class="anchored" data-anchor-id="d-models">3D Models</h2>
+<div class="sketchfab-embed-wrapper">
+<pre><code>&lt;iframe width="640" height="480" src="https://sketchfab.com/models/45e036d22eb0430c840751b5ae8deeb7/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true"
+        webkitallowfullscreen="true"&gt;
+&lt;/iframe&gt;
+&lt;p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"&gt;
+    &lt;a href="https://sketchfab.com/models/45e036d22eb0430c840751b5ae8deeb7?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup"
+       target="_blank"
+       style="font-weight: bold; color: #1CAAD9;"&gt;
+        Pilling Figurine No. 1
+    &lt;/a&gt;
+    by
+    &lt;a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup"
+       target="_blank"
+       style="font-weight: bold; color: #1CAAD9;"&gt;
+        Robert Bischoff
+    &lt;/a&gt;
+    on
+    &lt;a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup"
+       target="_blank"
+       style="font-weight: bold; color: #1CAAD9;"&gt;
+        Sketchfab
+    &lt;/a&gt;
+&lt;/p&gt;</code></pre>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/aca6c6f1197c4f0cb8af3ac066cb60ca/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/aca6c6f1197c4f0cb8af3ac066cb60ca?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;2</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/0014dfbf96f8438997e407e841d8c027/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/0014dfbf96f8438997e407e841d8c027?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;3</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<br>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/cf0f6a754f9d422198e9e9bde8a89065/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/cf0f6a754f9d422198e9e9bde8a89065?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No 4</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/33d5fd3f6ab840f0a3651d41f278bab9/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/33d5fd3f6ab840f0a3651d41f278bab9?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;5</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/7a199d47bc4745deac4f2806f5a64789/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/7a199d47bc4745deac4f2806f5a64789?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;6</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<br>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/b75225c9fa324fd7af1fecf475e79655/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/b75225c9fa324fd7af1fecf475e79655?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;7</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<br>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/6ee934f3d419453f963f75d13ba6cd8b/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/6ee934f3d419453f963f75d13ba6cd8b?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;8</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/3a0cc79e64b44a639834170c6aab5873/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/3a0cc79e64b44a639834170c6aab5873?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;9</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<p><br></p>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/3ace5a3a2dce4a379c93c84987135c69/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/3ace5a3a2dce4a379c93c84987135c69?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No 10</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<br>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/610622600917463c8d72acd19041ebcc/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/610622600917463c8d72acd19041ebcc?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;11</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+<br>
+<div class="sketchfab-embed-wrapper">
+<iframe width="640" height="480" src="https://sketchfab.com/models/17663e49d87b46c5887f972051384269/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true">
+</iframe>
+<p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
+<a href="https://sketchfab.com/models/17663e49d87b46c5887f972051384269?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Pilling Figurine No.&nbsp;12</a> by <a href="https://sketchfab.com/rbischoff?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Robert Bischoff</a> on <a href="https://sketchfab.com?utm_medium=embed&amp;utm_source=website&amp;utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
+</p>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>3D-Models</category>
+  <guid>https://bischrob.github.io/posts/Pilling Figurines 3D Models/post.html</guid>
+  <pubDate>Sat, 09 Jun 2018 07:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
