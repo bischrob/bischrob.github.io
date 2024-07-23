@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Robert J.Bischoff">
+<meta name="dcterms.date" content="2021-07-15">
+<meta name="description" content="Photogrammetry tutorial.">
+
+<title>Robert J. Bischoff - Artifact Photogrammetry Basics</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WBBYPE7DC2"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WBBYPE7DC2', { 'anonymize_ip': true});
+</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca&amp;display=swap">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Robert J. Bischoff</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bischrob"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Artifact Photogrammetry Basics</h1>
+                  <div>
+        <div class="description">
+          Photogrammetry tutorial.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">3D-Models</div>
+                <div class="quarto-category">tutorial</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Robert J.Bischoff </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 15, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="photogrammetry" class="level2">
+<h2 class="anchored" data-anchor-id="photogrammetry">Photogrammetry</h2>
+<p>Photogrammetry is a broad field that involves obtaining metrics from photographs. Structure from motion (often abbreviated <strong><em>sfm</em></strong>) is a branch of photogrammetry focused on estimating 3D structure from photos. This is usually what we mean when we say photogrammetry, and I’m happy to continue using the generic term, but now you know.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Collage.png" class="img-fluid figure-img"></p>
+<figcaption>Collage</figcaption>
+</figure>
+</div>
+<p>Photogrammetry is useful in a broad range of fields and is becoming a standard–even common–method in archaeology. 3D models can be used for preservation (artifacts cannot be replaced by 3D models, but much would have been preserved if we had 3D models of all the objects loss in the fire at the <a href="https://www.nationalgeographic.com/science/article/news-museu-nacional-fire-rio-de-janeiro-natural-history">Museu Nacional in Rio de Janeiro</a>), for public outreach (the <a href="https://vcuarchaeology3d.wordpress.com/">Virtual Curation Laboratory</a> is a great example), and for analysis (primarily through geometric morphometrics).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://news.vcu.edu/article/At_Civil_War_Museums_Emancipation_Day_VCU_students_use_3D_printing"><img src="DSC_3146_sm.png" class="img-fluid figure-img" alt="3D printing"></a></p>
+<figcaption>3D printing</figcaption>
+</figure>
+</div>
+<figcaption>
+<p>credit Brian McNeill</p>
+</figcaption>
+<p><br></p>
+<p>Photogrammetry is one of many ways to create 3D models, but it is one of the least expensive. Options range from free to use cell phone apps to professional software costing thousands a year for a license (<a href="https://peterfalkingham.com/2020/07/10/free-and-commercial-photogrammetry-software-review-2020/">here</a> is a recent look at different software. Agisoft’s Metashape has been around a while (it used to be called Photoscan) and it is what I use the most (I use the standard version purchased with a student license).</p>
+<p>My purpose here is to give a brief demonstration of my workflow for creating 3D models from archaeological artifacts (applies to any object really). The <a href="https://www.agisoft.com/downloads/user-manuals/" class="mainImg">Metashape manual</a> is quite useful, and there are a lot of good references online. I learned photogrammetry myself through Youtube and Google.</p>
+<p>There is a major difference between creating a full, 360° model and making a landscape model or modeling a stationary object. Photogrammetry uses reference points in the images to calculate the 3D structure, but if you move something in the background or the object itself, then it creates problems. The problem with modeling an artifact is that you usually need to flip the artifact over to get all sides of it. Once you flip the object over the software will usually create something like this.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="DoubledImage.png" class="img-fluid figure-img"></p>
+<figcaption>Double Image</figcaption>
+</figure>
+</div>
+<p>The solution is to tell the software to ignore everything in the background. There are many ways to do this, but the most sure is to make a black and white masks for each image. This is the process I’ll demonstrate, but before you make a 3D model you need to take the pictures.</p>
+<p>And before that, you need something to model…</p>
+</section>
+<section id="selecting-an-object" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-an-object">Selecting an object</h2>
+<p>Factors to consider when selecting an object are object geometry, surface reflection/transparency, sharp/fine edges, and moving/flowing parts. You need to be able to capture all aspects of the object from multiple camera angles. This can be challenging with small orifices or complicated geometry. For example, the Clay Pipe model below was challenging because I could not capture very far into the interior of the pipe. The size of the object makes a big difference but only because of the difficulty photographing it. If you can take a picture of it then then you can make a 3D model, but you may need special equipment for very small objects. A macro lens is a good investment.</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="FS9491 Fremont Clay Pipe" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/a4e08f0908c54126a2b7e6b127543b8d/embed">
+</iframe>
+</div>
+<p><br></p>
+<p>Transparent and reflective images will not work for photogrammetry due to the light distortion, but you can coat the surface with something non-reflective. I’ve tried talcum powder and it worked, but it wasn’t my favorite (see Clovis point below for my talcum example–note that the obsidian looking surface in the 3D model was made using <a href="https://www.blender.org/">Blender</a>. <a href="https://www.researchgate.net/profile/Samantha-Porter-5/publication/299820517_A_Comparison_of_Methods_for_Creating_3D_Models_of_Obsidian_Artifacts/links/5705ac7808aef745f7176f23/A-Comparison-of-Methods-for-Creating-3D-Models-of-Obsidian-Artifacts.pdf">This</a> is a good study comparing different options.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ObsidianCoating.jpg" class="img-fluid figure-img"></p>
+<figcaption>Obsidian Coating</figcaption>
+</figure>
+</div>
+<figcaption>
+<p>Clovis point coated in talcum powder</p>
+</figcaption>
+<p><br></p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Clovis Point" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/7d120265e751404a8f83c7ae882c5458/embed?ui_theme=dark">
+</iframe>
+</div>
+<p><br></p>
+<p>Another challenge is fine particles like hair or fur or sharp edges. The sharp edges of the obsidian Clovis point took several attempts to capture, but I found that taking lots of pictures helped. Anything that moves freely like hair or fur will be a challenge if it is not in the same relative position from photo to photo. This cradle figurine is a good example of how fur is difficult to capture. You can see that the edges are much fuzzier than other parts of the model. There are also holes where it was difficult to photograph the object due to the angles. I also didn’t want to set the basket upside down to photograph the back so that part is missing. To make the model seem nicer I added a board using Blender to make it look like it was sitting on something.</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Cradle Figurine" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/8b0d2c3a550648a3bf1bc121c067db9f/embed">
+</iframe>
+</div>
+<p><br></p>
+<p>To start with, I recommend choosing an object with rough texture and relatively simple geometry. It should have some distinguishing features though. I’ve found clay figures work very well. <a href="../data/Pillings3Example.zip">Here</a> is a dataset that I will use in this tutorial. These are pictures of <a href="https://bischrob.github.io/Pilling-Figurines-3D-Models/">Pillings Figurine No.&nbsp;3</a> which is on display at the <a href="https://eastern.usu.edu/museum/">USU Eastern Prehistoric Museum</a>. While choosing a good artifact is helpful for learning, don’t give up! I have been able to make 3D models work in some pretty bad situations–I even wrote a <a href="https://bischrob.github.io/Pilling-Figurines-3D-Models/">post</a> about it.</p>
+</section>
+<section id="photography" class="level2">
+<h2 class="anchored" data-anchor-id="photography">Photography</h2>
+<p>This is the most important step! It doesn’t matter how good your software is if your photos are garbage or you don’t have enough of them. I’ll be brief in a section that could use a lengthy discussion, and I still have a lot to learn myself.</p>
+<section id="equipment" class="level3">
+<h3 class="anchored" data-anchor-id="equipment">Equipment</h3>
+<p>I’ll list the optimal equipment here, but if you don’t have it then do without:</p>
+<ul>
+<li><p>DSLR Camera</p></li>
+<li><p>Macro lens</p></li>
+<li><p>Tripod</p></li>
+<li><p>Remote shutter release</p></li>
+<li><p>Lighting</p></li>
+<li><p>Turntable</p></li>
+</ul>
+</section>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p>Because you are removing the background, you want something as uniform as possible (think green screen technology but if you use green you may have to correct for the green glare). Choose something that contrasts with the color of the object so you can easily remove the background later.</p>
+<p>You want the camera stationary for best results, so use a tripod. The remote shutter release is great so that you don’t bump the camera while taking pictures.</p>
+<p>Lighting is always the most important element in photography. You want diffuse light that doesn’t cause harsh shadows. In fact, try to avoid all shadows (yes this can be a challenge–light boxes are one option).</p>
+<p>The turntable makes life a lot easier. You can even put marks on it to tell you how far to rotate the table in between shots. I’ve never used one, but an automatic turntable setup would be amazing.</p>
+<p>I haven’t mentioned a scale yet. Many people include a scale in the photos and then you can scale the model directly to the included scale. I don’t like it because I find it makes masking harder. My solution is to measure a feature of the object and then scale the object later. <a href="https://bischrob.github.io/Tutorial-Size-3D-Models-in-Blender/">This post</a> is a bit outdated now (I use Blender which has changed a lot), but it describes my process.</p>
+<p>One challenge is how to place the object. You can use a stand, putty, or set the object directly on the turntable, or on something else to hold it slightly off the turntable (having the object off the turntable reduces shadows). This process is very dependent on the object you want to capture.</p>
+</section>
+<section id="taking-pictures" class="level3">
+<h3 class="anchored" data-anchor-id="taking-pictures">Taking pictures</h3>
+<section id="settings" class="level4">
+<h4 class="anchored" data-anchor-id="settings">Settings</h4>
+<p>Use manual settings on the camera. The fewer settings (ideally none) that change the better. You don’t even want the focus to change. My wife is a photographer but it wasn’t until I learned photogrammetry that I picked up how to use a camera manually. There are four key things to control–and they’re all related (changing one may require changing another):</p>
+<ul>
+<li><p>Focus</p></li>
+<li><p>Aperture</p></li>
+<li><p>ISO</p></li>
+<li><p>Shutter speed</p></li>
+</ul>
+<p>You want as much of the object in focus as possible. Manually focus on the center of the object, and then don’t change the focus (turn autofocus off). The aperture (f-stop/f-number) controls the depth of field. This describes how much of the object is in focus at the same time. A low f-stop has a shallow depth of field, so you want a high f-stop. Be careful with the f-stop though. One mistake I used to make was using too high of an f-stop. If the f-stop is too high then the physics of light diffraction will make the images blurrier (Google it if you want to know why). You want the lowest f-stop that keeps the entire–or at least most–of the object in focus.</p>
+<p>ISO is a balance between brightness and graininess. A low ISO gives you less grainy images but requires more light. A high ISO allows you to use less light but you will have grainy pictures. Set up your lighting to allow the lowest ISO.</p>
+<p>Shutter speed is how long the camera shutter stays open. Longer exposures lead to brighter images. If you have a high f-stop then you let in less light, and if you have a low ISO you have a darker photo. The balance to these is to have a longer shutter-speed. If something moves while the shutter is open, then you will have a blurry photo. With a tripod and a stationary object on a turntable, you shouldn’t have to worry about how long the shutter stays open. The drawback is that longer shutter speeds means it takes longer to take the picture. More lighting can help with this though.</p>
+<p>You’ll need to experiment with these settings until you have a photo that is sharp and not too dark. Once you have the settings right, don’t change anything until you’re done with the shoot.</p>
+</section>
+<section id="orientation" class="level4">
+<h4 class="anchored" data-anchor-id="orientation">Orientation</h4>
+<p>Take the photos from a high and low angles: around 45 degrees for high and then from an angle shallow enough to capture the side and some of the top. The can angles vary depending on the object. I like to take about 20 pictures as I move the object in a full circle. That translates to rotating the turntable 18 degrees per photo, but often I just eye ball it. If I’m shooting directly at a sharp edge then I will take more photos as I begin to directly face teh sharp edge (shooting directly at a straight edge isn’t very helpful). Usually I’ll set up the camera for a high angle, take the pictures, flip the object over, and then move the camera to a low-angle position and repeat that step. But it might be easier to move the camera than flip the camera over.</p>
+<p>With this process I end up with about 80 photos. This is usually more than necessary, but not always. If any part of the object isn’t well captured in your photos then take as many additional photos as you need. You don’t have to use every photo in the 3D model, but if you need more photos then you have to do a lot more work.</p>
+</section>
+</section>
+<section id="format-and-resolution" class="level3">
+<h3 class="anchored" data-anchor-id="format-and-resolution">Format and resolution</h3>
+<p>The more data the better, right? Larger files use more storage space and higher resolutions require longer processing times. You can always downsize an image but you can’t increase resolution without interpolating…and don’t bother trying that. I always choose the highest resolution. You can save your files in raw format for best results, but tif or png will work as well. Yes jpg also works, but I recommend against using a lossy format (meaning that jpgs lose some of the information you save–and yes, the tutorial files are in jpg because the data is stored on my website and needs to be as small as possible but I’ve still got the full-resolution tifs). You don’t even need to downsize images to speed up processing because Metashape can do that for you if you want.</p>
+</section>
+</section>
+<section id="masks" class="level2">
+<h2 class="anchored" data-anchor-id="masks">Masks</h2>
+<p>I like to use photoshop to make my masks. You can even <a href="https://bischrob.github.io/Automatic-Background-Removal-for-Photogrammetry/">automate the process</a>. What I do first is copy the photos into a new folder labeled masks. I then edit each photo in the masks folder and save it as is. It may help to add an <strong><em>_mask</em></strong> tag to each filename, but it’s up to you. The mask process is simple. Essentially you just need to select the object using your favorite selection tool. Use the fill tool to make the object white. Invert your selection. Then use the fill tool to make everything else black. Check my post on automating the process to see more details.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Mask.png" class="img-fluid figure-img"></p>
+<figcaption>Mask</figcaption>
+</figure>
+</div>
+</section>
+<section id="import-images-and-masks" class="level2">
+<h2 class="anchored" data-anchor-id="import-images-and-masks">Import images and masks</h2>
+<p>Now we can open metashape. If you don’t have it, then <a href="https://www.agisoft.com/downloads/installer/">download</a> it on a free trial basis to start. You can <a href="../data/Pillings3Example.zip">download</a> some reduced-resolution photos to follow along or include your own. Click on the <strong><em>Workflow</em></strong> drop down menu and select <strong><em>Add Photos</em></strong>. Select all of your photos and import them. Next, we need to add the masks. You’ll see a folder labeled <strong><em>Cameras</em></strong> under <strong><em>Chunk 1</em></strong> in the workspace on the left. Click the arrow next to the <strong><em>Cameras</em></strong> folder to see all of the images. Right click on one (pick a photo, any photo) and find the option labeled <strong><em>Masks</em></strong>. Click <strong><em>Import Masks</em></strong>. You will see a menu like the one below. Your method should be <strong><em>From File</em></strong>. The operation should be <strong><em>Replacement</em></strong>. If you are using the test dataset then the filename should look like <strong><em>{filename}.jpg</em></strong>. What the filename structure means is that the software will look for a file with the same name as the images we already imported. If your image is A1.jpg and your mask is called A1_mask.jpg then the <strong><em>Filename template</em></strong> should look like <strong><em>{filename}_mask.jpg</em></strong>. Tolerance doesn’t apply to this operation and you want to make sure the <strong><em>All cameras</em></strong> option is selected in the <strong><em>Apply to</em></strong> section. Press ok, and you can then select the folder where the masks are stored. You should now see the non-object areas of your images grayed out.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ImportMasks.png" class="img-fluid figure-img"></p>
+<figcaption>Import Masks</figcaption>
+</figure>
+</div>
+</section>
+<section id="align-cameras" class="level2">
+<h2 class="anchored" data-anchor-id="align-cameras">Align cameras</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="TiePoints.png" class="img-fluid figure-img"></p>
+<figcaption>Tie Points</figcaption>
+</figure>
+</div>
+<p>Go back to the <strong><em>Workflow</em></strong> menu and choose <strong><em>Align Photos</em></strong>. You’ll see a menu like the one below. You haven’t had to make any real decisions in the workflow up to this point, but now we have a lot of options. Aligning the photos is <strong>the most important step</strong> in the 3D modeling process. If this step works well then you will get a good 3D model, otherwise you’ll need new photos. Don’t get discouraged if your photos don’t align on the first try though! It can take a lot of playing with the settings if you have a difficult object, but you can get good results with bad photographs (see <a href="https://osf.io/preprints/socarxiv/e9cw2/">this article</a> for archaeological examples). While you want your photos to align nicely the first try, higher settings shouldn’t be your first option and you can sometimes get better results with lower settings. The <strong><em>Accuracy</em></strong> option controls whether the image is reduced in size (your original images are not modified) before matching begins. I would try medium first and then work to higher settings if you get bad results. Higher settings can significantly increase the time it takes to align photos. Each of the following steps can take seconds to hours depending on the number of images, masks, and settings. Each of the steps below took less than a minute on my machine, but it may take much longer. You can check the manual for descriptions of every option, as I’ll only point out the ones that you need to change or double check. For this step, just choose your accuracy and make sure that the <strong><em>Apply masks to</em></strong> option reads <strong><em>Key points</em></strong> in the <strong><em>Advanced</em></strong> section. Hit ok and let the software run the calculations.</p>
+<p>Click the <strong><em>show cameras</em></strong> option on the menu bar (looks like a camera) if you don’t see the positions of your camera next to the tie points that were just generated. The tie points should generally resemble your object, but don’t worry if some points are scattered about in the wrong positions. You can also check the positions of the cameras around the object. If one looks out of place then you can remove it, disable it, or (best option) try to realign it by right clicking on the photo and using the options listed there. If not all cameras are aligned, the first step I recommend is to try aligning again with higher settings.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="AlignPhotos.png" class="img-fluid figure-img"></p>
+<figcaption>Align Photos</figcaption>
+</figure>
+</div>
+</section>
+<section id="build-dense-cloud" class="level2">
+<h2 class="anchored" data-anchor-id="build-dense-cloud">Build dense cloud</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="DenseCloud.png" class="img-fluid figure-img"></p>
+<figcaption>Dense Cloud</figcaption>
+</figure>
+</div>
+<p>If all your cameras seem aligned then build your dense cloud by going back to the <strong><em>Workflow</em></strong> menu and choosing <strong><em>Build Dense Cloud</em></strong>. I would start with high quality in this case, as the photos are already reduced. I also usually choose <strong><em>Aggressive</em></strong> for the <strong><em>Depth filtering</em></strong> shown in the <strong><em>Advanced</em></strong> section. Press ok and you should get a result (this part will take the longest) that looks a lot like what you are trying to model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="BuildDenseCloud.png" class="img-fluid figure-img"></p>
+<figcaption>Build Dense Cloud</figcaption>
+</figure>
+</div>
+</section>
+<section id="build-mesh" class="level2">
+<h2 class="anchored" data-anchor-id="build-mesh">Build mesh</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3DModelNoTexture.png" class="img-fluid figure-img"></p>
+<figcaption>3D Model No Texture</figcaption>
+</figure>
+</div>
+<p>As you might guess, the next step is to go back to the <strong><em>Workflow</em></strong> menu and choose the next option–<strong><em>Build Mesh</em></strong>. I always choose a high <strong><em>Face count</em></strong> at this step. I leave everything else at its default. For some objects you will need to disable <strong><em>Interpolation</em></strong> in the <strong><em>Advanced</em></strong> section. This will attempt to fill holes which is often necessary, but sometimes it can distort the model and create an innacurate representation. If the model is meant for precise geometric morphometrics or other analysis then interpolation may cause problems. You should now have a 3D model that should even be 3D printable.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="BuildMesh.png" class="img-fluid figure-img"></p>
+<figcaption>Build Mesh</figcaption>
+</figure>
+</div>
+</section>
+<section id="add-texture" class="level2">
+<h2 class="anchored" data-anchor-id="add-texture">Add texture</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3DModelTexture.png" class="img-fluid figure-img"></p>
+<figcaption>3D Model Texture</figcaption>
+</figure>
+</div>
+<p>The last step in the photogrammetry process is to add a texture. This does nothing to the model from a 3D standpoint, but it does add a nice, photorealistic touch that significantly improves the look of your model. Select the <strong><em>Build Texture</em></strong> option from the <strong><em>Workflow</em></strong> menu, and leave everything at the default. In some cases, you may want to increase the texture size for more detail. You should notice much clearer looking details on the model now.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Texture.png" class="img-fluid figure-img"></p>
+<figcaption>Texture</figcaption>
+</figure>
+</div>
+<p>This is what your model should look like if you used the example files (except this model was made on full-resolution photos):</p>
+<div class="sketchfab-embed-wrapper" style="text-align:center">
+<iframe title="Pilling Figurine No. 3" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="fullscreen; autoplay; vr" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" width="600" height="400" src="https://sketchfab.com/models/0014dfbf96f8438997e407e841d8c027/embed?ui_theme=dark">
+</iframe>
+</div>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export">Export</h2>
+<p>There are other options to manipulate the model in Metashape that can be useful. 3D models are often huge files and your computer may struggle to render it. You can decimate the mesh (reduce the number of triangles) by going to <strong><em>Tools</em></strong> &gt; <strong><em>Mesh</em></strong> &gt; <strong><em>Decimate Mesh</em></strong>. Choose a target face count and the model size will be reduced. The great thing about photogrammetry is that as long as you have the original photos you can reproduce your workflow and create higher resolution models.</p>
+<p>Once you are satisified with the model you can export it to a number of formats. Choose <strong><em>File</em></strong> &gt; <strong><em>Export</em></strong> &gt; <strong><em>Export Model</em></strong>. My default format is OBJ as it allows you to export the model texture. I usually use the defaults, except I like to choose png for the texture resolution. I will then use Blender to import the model and resize it or clean up bad parts of the model. Meshlab and Cloud Compare are other, open-sourced software that have a lot of great tools for working with 3D models. The easiest to view and share option is to save as an Adobe pdf. If you want to 3D print it, then export to STL.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Export.png" class="img-fluid figure-img"></p>
+<figcaption>Export</figcaption>
+</figure>
+</div>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
+<p>Now that you have a 3D model what do you do? Share it, print it, and/or analyze it. Sketchfab is probably the easiest way to share your model, although they’ve made it harder to do anything for free lately. 3D printers are a lot cheaper than they used to be, but some libraries now have 3D printing services and there are many online options for 3D printing things. The field of geometric morphometrics has a lot of exciting developments for analyzing shapes and is the next step to explore if you want to start analyzing your 3D models.</p>
+<p>If you have any questions, comments, or tips to share, please let me know in the comments or via <a href="mailto:bischrob@gmail.com">email</a>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

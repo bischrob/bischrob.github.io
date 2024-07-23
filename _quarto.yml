@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "Robert J. Bischoff"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/bischrob
+  google-analytics: "G-WBBYPE7DC2"
+  
+format:
+  html:
+    theme: slate
+    css: 
+      - styles.css
+      - https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap
+
+
+

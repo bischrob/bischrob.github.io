@@ -1,0 +1,17 @@
+---
+title: UseR Conference Shiny Presentation
+description: "Link to UseR CatMapper presentation."
+author: "Robert J.Bischoff"
+date: "06/21/2022"
+categories: 
+  - presentation
+  - R
+---
+
+Today I had the opportunity to present the work I've done with Dan Hruschka on the CatMapper application in the virtual UseR conference. The app was built using R shiny and Neo4j. 
+
+![CatMapper walk-through](CatMapperWalkThrough.gif)
+
+You can download the powerpoint [here](/data/Slides/CatMapperShinyApplication.pptx)
+
+

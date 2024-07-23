@@ -1,0 +1,40 @@
+---
+title: Easy GitHub Pages Website
+description: "3D models of the Pilling Figurines."
+author: "Robert J.Bischoff"
+date: "03/11/2022"
+categories: 
+  - tutorial
+---
+
+The [Association of All Graduate Students](https://shesc.asu.edu/student-life/graduate-clubs-organizations) at the School of Human Evolution and Social Change at Arizona State University held a workshop led by Maryse Biernat on the topic of digital portfolios--essentially building your own website. My contribution was demonstrating how I built this website.
+
+![githubpages](githubpages.jpeg)
+
+I chose to use GitHub because I didn't like the restrictions of WordPress. I spent some frustrating hours trying to build something from scratch and then went the smart route and forked Barry Clark's respository [barryclark/jekyll-now](https://github.com/barryclark/jekyll-now). I followed the tutorial he gives there to get my own website up and running. But, I wanted a more academic-focused site for the workshop, so I created this example repository [rjbischo/rjbischo.github.io](https://github.com/rjbischo/rjbischo.github.io).
+
+The steps are essentially the same as what are in Clark's repository, but here is the gist of it, and you can be up and running in minutes by changing a few things in the files. The main prerequisite is that you need to know a little about git, but you can get started with the [GitHub Desktop](https://desktop.github.com/) app and that's all you'll need.
+
+Steps to create a GitHub pages website:
+
+1\. Create an account (your username will be your website address--{username}.[github.io](http://github.io/))
+
+2\. Fork this repository -- <https://github.com/rjbischo/rjbischo.github.io>
+
+3\. Rename the repository to {your username}.[github.io](http://github.io/)
+
+4\. Clone the repository
+
+5\. Update the \_config.yml, about.html, CV.html, CV.pdf, publications.html, \_includes/default.html and images to whatever you want them to be.
+
+6\. Push the repository to GitHub.
+
+7\. Go to your new website at {your username}.[github.io](http://github.io/)
+
+For your reference, here are some example GitHub pages:
+
+<https://github.com/collections/github-pages-examples>
+
+## Conclusion
+
+I like that GitHub pages is free, you can be up and running in minutes, and it is endlessly customizable. The drawback is customizing it is not as user friendly as some other sites, but that can be part of the fun as you learn new things.

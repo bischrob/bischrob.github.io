@@ -1,0 +1,12 @@
+---
+title: Blog Update
+description: "Converted website to Quarto."
+author: "Robert J.Bischoff"
+date: "07/23/2024"
+categories: 
+  - news
+---
+
+Today I converted my website to the Quarto format instead of the Jekyll Github Pages format. You can learn more about Quarto blogs [here](https://quarto.org/docs/websites/website-blog.html). I did this mostly because it will be easier to manage and update. 
+
+Let me know if you find any errors in a post after the conversion. I can be reached at [bischrob@gmail.com](mailto:bischrob@gmail.com).

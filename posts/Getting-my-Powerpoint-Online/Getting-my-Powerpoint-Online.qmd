@@ -1,0 +1,27 @@
+---
+title: "Getting My Powerpoint Online"
+description: "3D models of the Pilling Figurines."
+author: "Robert J.Bischoff"
+date: "04/03/2022"
+date-modified: "07/23/2024"
+categories: 
+  - tutorial
+  - presentation
+---
+  
+
+Powerpoints are great. I know we like to pretend we hate them, but in a conference setting where the alternative is to just stare at the presenter awkwardly, I prefer to alternate staring awkwardly and, hopefully, look at some pretty pictures and graphs. This year, I thought I'd put my presentation for the Society for American Archaeology (SAA) Annual Meeting presentation online. It may not be the best presentation, but I want to try to be as open with my work as I can.
+
+![Tonto Basin Powerpoint](TontoBasinPPFigure.jpg)
+
+
+I found two ways to do this. First, when I stopped by the wonderful tDAR (tDAR.org) booth, I found out just how easy it is to upload my presentation to their database. I've been meaning to do this for a while, but have never gotten around to it. tDAR is a permanent digital repository. Essentially you can store anything digital in their repository and it will be both safe and accessible, if you want it to be. Second, I wanted to put up a copy on this blog. The hard, but potentially fun way would be to export and format the presentation into one of the great HTML-based slide presentations, but I decided to take the easy route and use the web version of powerpoint to embed my presentation, which you can enjoy (or not) below.
+
+The tDAR upload is not ready yet, but you can view the [GitHub repository here](https://github.com/bischrob/SAA2022).
+
+While I wait for tDAR to process this year's abstracts, I have managed to upload all of my previous SAA presentations and organize them into a [collection](https://core.tdar.org/collection/70752/robert-bischoff-conference-presentations). Now if I want to find an old SAA presentation for whatever reason, I don't have to dig through old files. I can go to the tDAR link where the files are stored permanently.
+
+<br>
+  
+  <iframe src="https://onedrive.live.com/embed?cid=0420F657700999BD&amp;resid=420F657700999BD%2110455&amp;authkey=AGSF-XhnQPwU_ao&amp;em=2&amp;wdAr=1.7777777777777777" width="800px" height="600px" frameborder="0">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe>
+  

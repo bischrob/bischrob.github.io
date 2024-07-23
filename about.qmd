@@ -1,0 +1,32 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/rjbischoff/
+    - icon: github
+      text: Github
+      href: https://github.com/bischrob
+    - icon: stackoverflow
+      text: Stack Overflow
+      href: https://stackoverflow.com/users/9482309/bischrob
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/bischrob10
+
+---
+
+## Me
+
+I am a computational archaeologist focused on the Southwest and Great Basin in the United States. My research focuses on various computational methods including network analysis, geometric morphometrics, 3D modeling, and GIS. I received my master’s degree from Brigham Young University and am currently attending Arizona State University for my doctorate. I am also working as the database manager for the Center for Archaeology and Society at Arizona State University.
+
+## CV
+
+[Download CV](https://bischrob.github.io/CV/CV.pdf)
+
+## Contact
+
+Email me at [bischrob@gmail.com](mailto:bischrob@gmail.com)
