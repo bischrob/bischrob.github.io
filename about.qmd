@@ -21,7 +21,9 @@ about:
 
 ## Me
 
-I am a computational archaeologist focused on the Southwest and Great Basin in the United States. My research focuses on various computational methods including network analysis, geometric morphometrics, 3D modeling, and GIS. I received my master’s degree from Brigham Young University and am currently attending Arizona State University for my doctorate. I am also working as the database manager for the Center for Archaeology and Society at Arizona State University.
+I am a PhD candidate at Arizona State University (ASU), where I also work as the digital data specialist for the Center for Archaeology and Society. I earned my BA and MA degrees from Brigham Young University, where I completed a thesis on San Juan Red Ware in the Four Corners region. Over the course of my career, I have excavated Fremont and Ancestral Puebloan sites, but I consider myself a “computational archaeologist,” focusing much of my research on museum collections and legacy data.
+
+My work centers on integrating digital technologies and quantitative methods into archaeological research. I specialize in network science, geographic information systems (GIS), geometric morphometrics (both 2D and 3D), and agent-based modeling to analyze human behavior, social dynamics, and material culture. I’ve published work on the Ancestral Pueblo, Fremont, and Hohokam cultures, contributing to the broader understanding of ancient societies through these computational techniques.
 
 ## CV
 
