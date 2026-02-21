@@ -1,0 +1,27 @@
+---
+title: "PhD Milestone: Dissertation and Defense"
+description: "An update on completing my PhD and where to find my dissertation."
+author: "Robert J.Bischoff"
+date: "02/21/2026"
+categories:
+  - news
+  - archaeology
+---
+
+Last year (2025), I finally completed my PhD.
+
+If you would like to watch my dissertation defense, it is available on YouTube [here](https://www.youtube.com/watch?v=-YHub50L0GE&t=1s).
+
+My dissertation, *Evaluating the Relationship Between Material Culture and Social Networks in Archaeology*, is available in an easy-to-read online format [here](https://bischrob.github.io/Dissertation/).
+
+## Abstract
+
+This dissertation evaluates the extent to which material culture networks, constructed from similarities in artifacts, can serve as effective proxies for past social networks. While commonly assumed in archaeological network studies, this link has rarely been systematically tested. To address this, I integrate agent-based modeling, geometric morphometrics, machine learning, and multilayer network analysis with a case study from the central U.S. Southwest.
+
+The ArchMatNet agent-based model simulates social interaction and material production among hunter-gatherers and small-scale horticulturalists. Key variables such as population size, interaction frequency, learning strategy, and trait visibility can be controlled. Results demonstrate that material culture networks align with social networks under specific conditions, particularly when traits differ between groups and are transmitted through a mix of prestige and conformism.
+
+These findings are tested against an empirical case study. A heuristic projectile point typology was developed using geometric morphometrics and machine learning, based on over 3,000 points from 81 sites in the U.S. Southwest. This typology forms the basis for a regional network analysis, which suggests that projectile points reflect broad-scale interaction but differ in structure from ceramic networks. A multilayer analysis of ceramic, architectural, and lithic data from Tonto Basin further shows that different artifact classes produce distinct network structures. These variations likely reflect diverse social processes, including gendered patterns of production and exchange.
+
+Overall, the results demonstrate that material culture networks can offer meaningful insights into social interaction, but their reliability depends on several factors: trait distinctiveness, transmission dynamics, trait visibility, and data quality. This work contributes to archaeological network analysis by combining experimental and empirical methods and by emphasizing the need to critically assess assumptions behind similarity-based models.
+
+The approaches presented here are broadly applicable, but their interpretive power depends on context. Under the right conditions, material culture can reflect social networks in analytically useful ways, but only if archaeologists remain attentive to its constraints.
