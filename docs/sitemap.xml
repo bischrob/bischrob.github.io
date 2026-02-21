@@ -1,71 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://bischrob.github.io/Vault/Site_Content_Map.html</loc>
+    <lastmod>2026-02-21T23:21:30.332Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/Vault/Repository_Overview.html</loc>
+    <lastmod>2026-02-21T23:21:24.657Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/Vault/PhD_Milestone_2025.html</loc>
+    <lastmod>2026-02-21T23:36:56.598Z</lastmod>
+  </url>
+  <url>
     <loc>https://bischrob.github.io/posts/why-I-like-R/post.html</loc>
-    <lastmod>2024-07-23T18:22:47.395Z</lastmod>
+    <lastmod>2026-02-21T23:19:04.329Z</lastmod>
   </url>
   <url>
     <loc>https://bischrob.github.io/posts/Size 3D Models in Blender/post.html</loc>
-    <lastmod>2024-07-23T18:10:08.114Z</lastmod>
+    <lastmod>2026-02-21T23:19:03.780Z</lastmod>
   </url>
   <url>
-    <loc>https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/post.html</loc>
-    <lastmod>2024-07-23T18:04:09.787Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Easy-GitHub-Pages-Website/post.html</loc>
-    <lastmod>2024-07-23T17:53:09.910Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/post.html</loc>
-    <lastmod>2024-07-23T17:50:51.043Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/post.html</loc>
-    <lastmod>2024-07-23T17:28:47.970Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/index.html</loc>
-    <lastmod>2024-07-23T20:49:41.376Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/data/Slides/Final-Project-Proposal-Presentation-html_files/reveal.js-3.3.0.1/CONTRIBUTING.html</loc>
-    <lastmod>2024-07-23T16:57:02.863Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/about.html</loc>
-    <lastmod>2024-07-23T16:46:38.312Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/data/Slides/Final-Project-Proposal-Presentation-html_files/reveal.js-3.3.0.1/plugin/markdown/example.html</loc>
-    <lastmod>2024-07-23T16:57:02.959Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Academic-Reading-on-the-Go/post.html</loc>
-    <lastmod>2024-07-23T17:38:50.574Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/post.html</loc>
-    <lastmod>2024-07-23T17:44:59.395Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Blog Update/post.html</loc>
-    <lastmod>2024-07-23T18:27:36.476Z</lastmod>
-  </url>
-  <url>
-    <loc>https://bischrob.github.io/posts/Getting-my-Powerpoint-Online/post.html</loc>
-    <lastmod>2024-07-23T18:00:06.900Z</lastmod>
+    <loc>https://bischrob.github.io/posts/PhD-Dissertation-Update/post.html</loc>
+    <lastmod>2026-02-21T23:43:45.902Z</lastmod>
   </url>
   <url>
     <loc>https://bischrob.github.io/posts/Managing-Hanging-R-Code/post.html</loc>
-    <lastmod>2024-07-23T20:41:28.800Z</lastmod>
+    <lastmod>2026-02-21T23:19:03.710Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Getting-my-Powerpoint-Online/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.108Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Blog Update/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.104Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Automated-Netlogo_Flowcharts_in_R/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.087Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Academic-Reading-on-the-Go/post.html</loc>
+    <lastmod>2026-02-21T23:19:02.949Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/data/Slides/Final-Project-Proposal-Presentation-html_files/reveal.js-3.3.0.1/plugin/markdown/example.html</loc>
+    <lastmod>2026-02-21T23:19:01.577Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/about.html</loc>
+    <lastmod>2026-02-21T23:36:45.244Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/data/Slides/Final-Project-Proposal-Presentation-html_files/reveal.js-3.3.0.1/CONTRIBUTING.html</loc>
+    <lastmod>2026-02-21T23:19:01.452Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/index.html</loc>
+    <lastmod>2026-02-21T23:19:02.917Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Artifact-Photogrammetry-Basics/post.html</loc>
+    <lastmod>2026-02-21T23:49:38.091Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Automatic-Background-Removal-for-Photogrammetry/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.103Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Easy-GitHub-Pages-Website/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.106Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/posts/Making-Image-Mosaics-in-R/post.html</loc>
+    <lastmod>2026-02-21T23:19:03.704Z</lastmod>
   </url>
   <url>
     <loc>https://bischrob.github.io/posts/Pilling Figurines 3D Models/post.html</loc>
-    <lastmod>2024-07-23T17:01:49.738Z</lastmod>
+    <lastmod>2026-02-21T23:49:22.238Z</lastmod>
   </url>
   <url>
     <loc>https://bischrob.github.io/posts/UseR-Conference-Shiny-Presentation/post.html</loc>
-    <lastmod>2024-07-23T18:21:20.686Z</lastmod>
+    <lastmod>2026-02-21T23:19:04.324Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/Vault/Index.html</loc>
+    <lastmod>2026-02-21T23:36:52.766Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/Vault/Public_Information_Policy.html</loc>
+    <lastmod>2026-02-21T23:21:33.584Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bischrob.github.io/Vault/Site_Build_System.html</loc>
+    <lastmod>2026-02-21T23:21:27.460Z</lastmod>
   </url>
 </urlset>

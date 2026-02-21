@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Robert J.Bischoff">
-<meta name="dcterms.date" content="2020-06-30">
-<meta name="description" content="How to create image mosaics using R.">
+<meta name="dcterms.date" content="2026-02-21">
+<meta name="description" content="An update on completing my PhD and where to find my dissertation.">
 
-<title>Making Image Mosaics in R – Robert J. Bischoff</title>
+<title>PhD Milestone: Dissertation and Defense – Robert J. Bischoff</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -163,15 +128,15 @@ gtag('config', 'G-WBBYPE7DC2', { 'anonymize_ip': true});
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Making Image Mosaics in R</h1>
+      <h1 class="title">PhD Milestone: Dissertation and Defense</h1>
                   <div>
         <div class="description">
-          How to create image mosaics using R.
+          An update on completing my PhD and where to find my dissertation.
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">R</div>
-                <div class="quarto-category">tutorial</div>
+                <div class="quarto-category">news</div>
+                <div class="quarto-category">archaeology</div>
               </div>
                   </div>
   </div>
@@ -189,7 +154,7 @@ gtag('config', 'G-WBBYPE7DC2', { 'anonymize_ip': true});
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 30, 2020</p>
+        <p class="date">February 21, 2026</p>
       </div>
     </div>
     
@@ -208,126 +173,19 @@ gtag('config', 'G-WBBYPE7DC2', { 'anonymize_ip': true});
 
 
 
-<p>I had the idea to make my dad an image mosaic of his grandkids for Father’s day. My immediate thought was to check if R had a package for that–and it does. The <code>RsimMosaic</code> package is a great tool for making image mosaics. Combined with the <code>magick</code> package, I have all the tools I need. While I think the picture of my dad turned out great, I decided to make an archaeology related mosaic for this post.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="PuebloBonitoMosaicSmall.jpg" class="img-fluid figure-img"></p>
-<figcaption>Mosaic Small</figcaption>
-</figure>
-</div>
-<p>The first step was to gather the photos. The more photos the better. My wife and I use Google Photos to store all of our pictures, so I searched the term <em>archaeology</em> within my photo account and used Google’s AI to make my life easier. I downloaded more than 1,000 photographs that matched this term. Not every picture was archaeology related, but it did a fairly good job. I only removed a few pictures that didn’t fit.</p>
-<p>I also use <code>tidyverse</code> which is standard for me and <code>magrittr</code>, as I like some of the pipes not included in <code>tidyverse</code>. The <code>tictoc</code> package is a great little package for keeping track of elapsed time. Base R can take care of a lot of the functions in these packages, but I find them more convenient and easier to follow. The magick package sometimes has a problem with memory management when communicating with imagemagick, but the development version of the package has an <code>image_destroy</code> function that helps.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># libraries used</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'ropensci/magick'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RsimMosaic)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magick)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tictoc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>As my photos were zipped, I used R to unzip them (why not use R for everything, right?). I use the <code>walk</code> function from <code>purrr</code> as it doesn’t return any results. I have the photos stored in a subdirectory called <em>Photos</em>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># photos are zipped; list files and unzip them</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>lfZip <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"Photos"</span>, <span class="at">full.names =</span> T, <span class="at">pattern =</span> <span class="st">'zip'</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># use walk from purrr to unzip folders</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(lfZip, unzip, <span class="at">exdir =</span> <span class="st">'Photos'</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># list all photos</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>lf <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"Photos"</span>, <span class="at">pattern =</span> <span class="st">'jpg'</span>, <span class="at">full.names =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The biggest problem with the image mosaic is that all of the images have to be square. I don’t know about you, but I don’t take many square photos. <code>RsimMosaic</code> does have a <code>createTiles</code> function, but as the help file notes, the interpolation scheme does not produce high quality images. I wrote my own function to generate square tiles and again I used <code>walk</code> to save the results. The function crops photos in the middle, depending on whether it is a landscape or portrait orientation.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create new directory to save results</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">'Tiles'</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># function to create square tiles</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>squareTiles <span class="ot">&lt;-</span> <span class="cf">function</span>(.x, <span class="at">size =</span> <span class="dv">60</span>){</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  img <span class="ot">&lt;-</span> <span class="fu">image_read</span>(.x)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  info <span class="ot">&lt;-</span> img <span class="sc">%&gt;%</span> image_info</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(info<span class="sc">$</span>width <span class="sc">&gt;</span> info<span class="sc">$</span>height){</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    img <span class="sc">%&lt;&gt;%</span> <span class="fu">image_scale</span>(<span class="fu">str_glue</span>(<span class="st">'x{size}'</span>))</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    img <span class="sc">%&gt;%</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">image_crop</span>(<span class="fu">str_glue</span>(</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'{size}x{size}+{(image_info(img)$width - {size}) / 2}+0'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">image_write</span>(<span class="fu">str_replace_all</span>(.x,<span class="st">'Photos'</span>,<span class="st">'Tiles'</span>))</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    img <span class="sc">%&lt;&gt;%</span> <span class="fu">image_scale</span>(<span class="fu">str_glue</span>(<span class="st">'{size}'</span>))</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    img <span class="sc">%&gt;%</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">image_crop</span>(<span class="fu">str_glue</span>(</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'{size}x{size}+0+{(image_info(img)$height - {size}) / 2}'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">image_write</span>(<span class="fu">str_replace_all</span>(.x,<span class="st">'Photos'</span>,<span class="st">'Tiles'</span>))</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">image_destroy</span>(img) <span class="co"># prevent memory problems</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># run function</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(lf, squareTiles)</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 4837.13 sec elapsed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>It took my computer 4837 seconds (<code>r round(4837 / 60,2)</code> hours) to run for all 1,486 pictures. Maybe I downloaded too many, but this is going to be a lengthy process.</p>
-<p>Here’s a comparison of two 60-pixel images, the first is from the <code>createTiles</code> function, and the second is from the custom function. <code>Magick</code> is the clear winner.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">createTiles</th>
-<th style="text-align: center;">magick</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><img src="createTiles.jpg" height="180"></td>
-<td style="text-align: center;"><img src="magick.jpg" height="180"></td>
-</tr>
-</tbody>
-</table>
-<p>Once the tiles were ready, finally. I picked one of the photos, a picture of <a href="https://en.wikipedia.org/wiki/Pueblo_Bonito">Pueblo Bonito</a>, and converted it to a smaller size. Each pixel in the input image will be replaced by a 60-pixel tile, which means the resulting image is huge unless you use a very small pixel value. I’m going for big, but not too big.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="PuebloBonitoOriginal.jpg" class="img-fluid figure-img"></p>
-<figcaption>Pueblo Bonito</figcaption>
-</figure>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">image_read</span>(<span class="st">'Photos/20171006_135349.jpg'</span>) <span class="sc">%&gt;%</span> <span class="fu">image_scale</span>(<span class="st">'250'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">image_write</span>(<span class="st">'PuebloBonito.jpg'</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the mosaic</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">composeMosaicFromImageRandom</span>(<span class="st">'PuebloBonito.jpg'</span>, <span class="st">'PuebloBonitoMosaic.jpg'</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># 'Tiles', removeTiles=FALSE)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 93.66 sec elapsed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Note in case you run across this: When I ran this function the first time it failed. I did some investigation and determined that a handful of photos were saved with an 8 bit depth and the other were 24 bit depth. As there were only a few, I just removed them and proceeded.</p>
-<p>The result is cool if you zoom in, but doesn’t look all that great. A good way to improve the look is to overlay the original photo with a 50% opacity. I also wanted to increase the contrast. I do love Photoshop and it can easily be done that route, but I think I said something about doing it all in R, so here we go.</p>
-<p>(Warning: the following images may take a long time to load)</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="PuebloBonitoMosaic.jpg" class="img-fluid figure-img"></p>
-<figcaption>Pueblo Bonito Mosaic</figcaption>
-</figure>
-</div>
-<p>Increasing contrast is not difficult, but the opacity problem is more challenging. There is no native way in the <code>magick</code> package to change the background opacity, and because it is a jpg image, the color scheme is <em>rgb</em> when it needs to be <em>rgba</em>. The hack I used is to make all white pixels transparent on the original photo, which doesn’t really change the picture but does change it to <em>rgba</em>. I then modified the bitmap directly by multiplying it by 0.5. Then the images can be combined and saved to produce the final result.</p>
-<pre><code>original &lt;- image_read('Photos/20171006_135349.jpg')
-mosaic &lt;- image_read('PuebloBonitoMosaic.jpg') %&gt;%
-  image_contrast() # increase contrast
-inf &lt;- mosaic %&gt;% image_info
-original %&lt;&gt;% image_scale(str_glue('{inf$width}x{inf$height}!')) %&gt;%
-  image_transparent('white')
-bitmap &lt;- original[[1]]
-bitmap[4,,] &lt;- as.raw(as.integer(bitmap[4,,]) * 0.5)
-original &lt;- image_read(bitmap)
-original &lt;- c(mosaic, original) %&gt;% image_flatten()
-image_write(original, 'PuebloBonitoMosaicMod.jpg', quality = 80)</code></pre>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="PuebloBonitoMosaicMod.jpg" class="img-fluid figure-img"></p>
-<figcaption>Pueblo Bonito Overlay</figcaption>
-</figure>
-</div>
-<p>It’s not perfect, but there are a lot of ways to tweak it to improve the result. Changing the opacity, and pixel sizes will make the biggest difference. Let me know if you have any ideas on how to improve this code, and I hope you have some fun making mosaics of your dogs, cats, or whatever you love.</p>
+<p>Last year (2025), I finally completed my PhD.</p>
+<p>If you would like to watch my dissertation defense, it is available on YouTube <a href="https://www.youtube.com/watch?v=-YHub50L0GE&amp;t=1s">here</a>.</p>
+<p>My dissertation, <em>Evaluating the Relationship Between Material Culture and Social Networks in Archaeology</em>, is available in an easy-to-read online format <a href="https://bischrob.github.io/Dissertation/">here</a>.</p>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<p>This dissertation evaluates the extent to which material culture networks, constructed from similarities in artifacts, can serve as effective proxies for past social networks. While commonly assumed in archaeological network studies, this link has rarely been systematically tested. To address this, I integrate agent-based modeling, geometric morphometrics, machine learning, and multilayer network analysis with a case study from the central U.S. Southwest.</p>
+<p>The ArchMatNet agent-based model simulates social interaction and material production among hunter-gatherers and small-scale horticulturalists. Key variables such as population size, interaction frequency, learning strategy, and trait visibility can be controlled. Results demonstrate that material culture networks align with social networks under specific conditions, particularly when traits differ between groups and are transmitted through a mix of prestige and conformism.</p>
+<p>These findings are tested against an empirical case study. A heuristic projectile point typology was developed using geometric morphometrics and machine learning, based on over 3,000 points from 81 sites in the U.S. Southwest. This typology forms the basis for a regional network analysis, which suggests that projectile points reflect broad-scale interaction but differ in structure from ceramic networks. A multilayer analysis of ceramic, architectural, and lithic data from Tonto Basin further shows that different artifact classes produce distinct network structures. These variations likely reflect diverse social processes, including gendered patterns of production and exchange.</p>
+<p>Overall, the results demonstrate that material culture networks can offer meaningful insights into social interaction, but their reliability depends on several factors: trait distinctiveness, transmission dynamics, trait visibility, and data quality. This work contributes to archaeological network analysis by combining experimental and empirical methods and by emphasizing the need to critically assess assumptions behind similarity-based models.</p>
+<p>The approaches presented here are broadly applicable, but their interpretive power depends on context. Under the right conditions, material culture can reflect social networks in analytically useful ways, but only if archaeologists remain attentive to its constraints.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

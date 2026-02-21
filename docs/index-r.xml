@@ -9,7 +9,7 @@
 <link>https://bischrob.github.io/#category=R</link>
 <atom:link href="https://bischrob.github.io/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>Robert J. Bischoff&#39;s personal website and blog containing posts on archaeology, R, and data science.</description>
-<generator>quarto-1.4.555</generator>
+<generator>quarto-1.8.27</generator>
 <lastBuildDate>Tue, 23 Jul 2024 07:00:00 GMT</lastBuildDate>
 <item>
   <title>Managing Hanging R Code</title>
@@ -33,14 +33,14 @@
 <p>Below is example code demonstrating my process.</p>
 <p>First, we’ll create a list of example graphs. We can create a graph like this.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1010</span>)</span>
 <span id="cb1-2"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(statnet)</span></code></pre></div>
+font-style: inherit;">library</span>(statnet)</span></code></pre></div></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: tergm</code></pre>
 </div>
@@ -150,7 +150,7 @@ copyright (c) 2005, Carter T. Butts, University of California-Irvine
 <div class="cell-output cell-output-stderr">
 <pre><code>unable to reach CRAN</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">g <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">g <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -165,7 +165,7 @@ background-color: null;
 font-style: inherit;">0.1</span>))</span>
 <span id="cb25-2"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">plot</span>(g)</span></code></pre></div>
+font-style: inherit;">plot</span>(g)</span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -176,7 +176,7 @@ font-style: inherit;">plot</span>(g)</span></code></pre></div>
 </div>
 <p>We’ll use the <em>lapply</em> function to make a list of graphs.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">graphs <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">graphs <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -188,6 +188,7 @@ font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">network</span>(<span class="fu" style="color: #4758AB;
@@ -209,11 +210,11 @@ font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">10</span>]</span></code></pre></div>
+font-style: inherit;">10</span>]</span></code></pre></div></div>
 </div>
 <p>Now we have graphs we can use with the <em>ergm</em> function. For simplicity, we’ll use a for loop to calculate the ergm for each graph. I’ve commented out the below code, because it will hang the R session.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># # don't run</span></span>
 <span id="cb27-2"><span class="co" style="color: #5E5E5E;
@@ -224,15 +225,16 @@ background-color: null;
 font-style: inherit;">#   ergm(graph ~ edges + triangles)</span></span>
 <span id="cb27-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># }</span></span></code></pre></div>
+font-style: inherit;"># }</span></span></code></pre></div></div>
 </div>
 <p>How do we handle this? Error handling like <em>try</em> or <em>tryCatch</em> won’t work because the R session is hanging not providing an error. What I want to do is stop the code from running if it takes longer than a certain time. We can do this by running the code in a background process. We can use the <em>r_bg()</em> function from the <em>callr</em> package. We can specify the time limit for the process to run. If the process takes longer than the time limit, the process will be killed.</p>
 <p>To do this, we’ll need to create a function to supervise the background process.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">run_and_monitor_processes <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">run_and_monitor_processes <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(bg, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">timeout =</span> <span class="dv" style="color: #AD0000;
@@ -249,6 +251,7 @@ background-color: null;
 font-style: inherit;"># Monitor processes</span></span>
 <span id="cb28-5">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">while</span> (<span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>) {</span>
@@ -265,13 +268,16 @@ background-color: null;
 font-style: inherit;"># Check the status of each process</span></span>
 <span id="cb28-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (name <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">names</span>(bg)) {</span>
 <span id="cb28-10">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (bg[[name]]<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
@@ -292,6 +298,7 @@ background-color: null;
 font-style: inherit;">"secs"</span>))</span>
 <span id="cb28-12">        <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (shiny<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
@@ -328,6 +335,7 @@ background-color: null;
 font-style: inherit;"># Exit the loop if all processes are done</span></span>
 <span id="cb28-20">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">all</span>(<span class="sc" style="color: #5E5E5E;
@@ -336,6 +344,7 @@ font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sapply</span>(bg, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(p) p<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
@@ -343,15 +352,16 @@ background-color: null;
 font-style: inherit;">is_alive</span>()))) {</span>
 <span id="cb28-21">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">break</span></span>
 <span id="cb28-22">    }</span>
 <span id="cb28-23">  }</span>
-<span id="cb28-24">}</span></code></pre></div>
+<span id="cb28-24">}</span></code></pre></div></div>
 </div>
 <p>This function checks how long a process has been running and kills it if it exceeds the specified timeout. Once all processes are done, the function exits.</p>
 <p>We also need to create a function to run the ERGM so we can pass in the arguments and load the <em>statnet</em> package. We are creating a separate background process that does not have access to the global environment. Results can be obtained from the background process using the <em>get_result()</em> function, but I find it safer when running longer code to just write the results to a file. This way the results are saved even if R crashes or something else interrupts the code.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">tmp_dir <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">tmp_dir <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -360,6 +370,7 @@ font-style: inherit;">tempdir</span>()</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(graph, dir, i){</span>
 <span id="cb29-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -389,11 +400,11 @@ background-color: null;
 font-style: inherit;">return</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Done"</span>)</span>
-<span id="cb29-7">}</span></code></pre></div>
+<span id="cb29-7">}</span></code></pre></div></div>
 </div>
 <p>Now we can run our <em>run_ergm</em> function for each graph without the process hanging. An additional advantage is that we are running the code in parallel, which can speed up the process.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(callr)</span>
 <span id="cb30-2">bg <span class="ot" style="color: #003B4F;
@@ -405,8 +416,10 @@ background-color: null;
 font-style: inherit;"># create a global list to store the background processes</span></span>
 <span id="cb30-3"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -440,20 +453,21 @@ font-style: inherit;">i =</span> i))</span>
 <span id="cb30-7">}</span>
 <span id="cb30-8"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">run_and_monitor_processes</span>(bg)</span></code></pre></div>
+font-style: inherit;">run_and_monitor_processes</span>(bg)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Process b killed after 15.21355 seconds
 Process h killed after 15.28757 seconds
 Process i killed after 15.34911 seconds
 Process j killed after 15.42225 seconds</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># get results</span></span>
 <span id="cb32-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sapply</span>(bg, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(p) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tryCatch</span>(p<span class="sc" style="color: #5E5E5E;
@@ -464,16 +478,17 @@ font-style: inherit;">get_result</span>(),<span class="at" style="color: #657422
 background-color: null;
 font-style: inherit;">error =</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(e) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">return</span>(<span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">NA</span>)))</span></code></pre></div>
+font-style: inherit;">NA</span>)))</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     a      b      c      d      e      f      g      h      i      j 
 "Done"     NA "Done" "Done" "Done" "Done" "Done"     NA     NA     NA </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># view saved results</span></span>
 <span id="cb34-2">ls <span class="ot" style="color: #003B4F;
@@ -493,7 +508,7 @@ font-style: inherit;">TRUE</span>)</span>
 background-color: null;
 font-style: inherit;">print</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">sapply</span>(ls,readLines))</span></code></pre></div>
+font-style: inherit;">sapply</span>(ls,readLines))</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>C:\\Users\\rjbischo\\AppData\\Local\\Temp\\Rtmp6dGUPg/done-1.txt 
                                                           "Done" 
@@ -718,12 +733,12 @@ grViz(diagram) %&gt;% export_svg() %&gt;% image_read_svg() %&gt;% image_write("f
 <p>The NBA playoffs are about to start and my beloved Utah Jazz are racing for the number one seed. I frequently check <a href="https://projects.fivethirtyeight.com/2021-nba-predictions/">fivethirtyeight’s</a> and <a href="https://www.espn.com/nba/story/_/page/BPI-Playoff-Odds/espn-nba-basketball-power-index-playoff-odds">ESPN’s</a> playoff predictions. These are great, but they don’t show the odds of ending up in a particular playoff spot. I decided to sit down and see if I could calculate the odds before the game against Golden State ended tonight.</p>
 <p>If you’re not interested in the code, then skip to the end, and I’ll tell you the numbers. This isn’t an introduction to R, it’s more me showing some of the capabilities of R. The great thing is, you can adapt this code to see the odds your team hits a certain number of wins.</p>
 <p>First I love the tidyverse, which is a collection of packages that make R easier to use and understand. I also like some of the features of the magrittr package that aren’t loaded with the tidyverse packages. Rvest is a package to scrape the web, and lubridate is a great package for working with dates.</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(magrittr)</span>
 <span id="cb1-2"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(tidyverse)</span></code></pre></div>
+font-style: inherit;">library</span>(tidyverse)</span></code></pre></div></div>
 <pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
 <pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
 ## v tibble  3.1.0     v dplyr   1.0.5
@@ -734,17 +749,17 @@ font-style: inherit;">library</span>(tidyverse)</span></code></pre></div>
 ## x dplyr::filter()    masks stats::filter()
 ## x dplyr::lag()       masks stats::lag()
 ## x purrr::set_names() masks magrittr::set_names()</code></pre>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(rvest)</span></code></pre></div>
+font-style: inherit;">library</span>(rvest)</span></code></pre></div></div>
 <pre><code>## 
 ## Attaching package: 'rvest'</code></pre>
 <pre><code>## The following object is masked from 'package:readr':
 ## 
 ##     guess_encoding</code></pre>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(lubridate)</span></code></pre></div>
+font-style: inherit;">library</span>(lubridate)</span></code></pre></div></div>
 <pre><code>## 
 ## Attaching package: 'lubridate'</code></pre>
 <pre><code>## The following objects are masked from 'package:base':
@@ -756,7 +771,7 @@ font-style: inherit;">library</span>(lubridate)</span></code></pre></div>
 <p>Next, I had to get the links to each remaining game so I could pull the odds of winning.</p>
 <p>The <code>%&lt;&gt;%</code> function is one of my favorites as it takes whatever is on the left, uses it in the function to the right and also assigns the result of the function back to that variable. Thus I can save the typing for <code>schedule = schedule %&gt;%</code> and it makes it easy to test code before saving it to a variable by just using <code>%&gt;%</code> for the test and then adding in the last <code>&lt;</code> symbol once I have it right.</p>
 <p>I won’t describe what <strong><em>xpaths</em></strong> are in detail, but they can be used to identify specific elements on a page. The table rows match up to the <code>xpath</code> so I can get all of the links to the individual games by just changing what is essentially the row number. This was easier to do before the game started, but afterwards the link disappeared, so I had to find a workaround that works more consistently.</p>
-<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">url <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">url <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -847,9 +862,9 @@ font-style: inherit;">'DATE'</span>,RESULT <span class="sc" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Postponed'</span>)</span></code></pre></div>
+font-style: inherit;">'Postponed'</span>)</span></code></pre></div></div>
 <p>Next, I identified the remaining games. There are a few ways to do this, but I decided to get complicated and convert the date in the schedule table to a real date so I could filter for games today and later. It might be better to just filter for games that are not completed, but this way shows how R can be used for time series.</p>
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">schedule <span class="sc" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">schedule <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%&lt;&gt;%</span> </span>
 <span id="cb12-2">  <span class="fu" style="color: #4758AB;
@@ -928,9 +943,9 @@ font-style: inherit;">filter</span>(DATE <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&gt;=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">today</span>())</span></code></pre></div>
+font-style: inherit;">today</span>())</span></code></pre></div></div>
 <p>Next, I used a <strong><em>purrr map</em></strong> function to go through each game link and get the odds of winning for the home team. I then calculated the Jazz odds of winning by determining who was the home team and inverting the odds if necessary. Because I ran this during a game the game link was missing so I used the invalidate function from <strong><em>gtools</em></strong> to add in the odds for tonight. I haven’t used this function much but it seems a good catchall for values that are problematic (e.g., null,NA, or empty values).</p>
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">remaining <span class="sc" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">remaining <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%&lt;&gt;%</span> </span>
 <span id="cb13-2">  <span class="fu" style="color: #4758AB;
@@ -944,6 +959,7 @@ background-color: null;
 font-style: inherit;">~</span>{</span>
 <span id="cb13-3">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span>(gtools<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
@@ -958,6 +974,7 @@ background-color: null;
 font-style: inherit;"># this was the odds pregame for Jazz vs Warriors</span></span>
 <span id="cb13-5">    } <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> {</span>
 <span id="cb13-6">    xpath <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1043,12 +1060,13 @@ font-style: inherit;">~</span>HomePred<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">100</span>))</span></code></pre></div>
+font-style: inherit;">100</span>))</span></code></pre></div></div>
 <p>Last, I created a function to simulate the remaining wins using 1 as a win and zero as a loss and replicated that function 10,000 times. The simulation went fairly quickly on my computer, and I used the nice and simple <strong><em>tictoc</em></strong> package to show the time elapsed.</p>
-<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">predictWins <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">predictWins <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">probs =</span> remaining<span class="sc" style="color: #5E5E5E;
@@ -1107,22 +1125,23 @@ font-style: inherit;">$</span>WinPer))</span>
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">toc</span>()</span></code></pre></div>
+font-style: inherit;">toc</span>()</span></code></pre></div></div>
 <pre><code>## 1.14 sec elapsed</code></pre>
 <p>With these results I could look at the odds Utah wins its remaining games.</p>
-<div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">table</span>(sims))</span></code></pre></div>
+font-style: inherit;">table</span>(sims))</span></code></pre></div></div>
 <pre><code>## sims
 ##      0      1      2      3      4 
 ## 0.0085 0.0873 0.2913 0.4208 0.1921</code></pre>
 <p>The Phoenix Suns are closing in on the Jazz. I could run the above code again but substituting the Phoenix Suns schedule url for the Jazz url. As a general rule, copying and pasting code is a bad idea. If I have to fix something in the code, then I have to fix it in multiple places. Instead I can turn everything I did into a function.</p>
-<div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">predictRemaining <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">predictRemaining <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(team){</span>
 <span id="cb18-2">  </span>
 <span id="cb18-3">url <span class="ot" style="color: #003B4F;
@@ -1317,6 +1336,7 @@ background-color: null;
 font-style: inherit;">~</span>{</span>
 <span id="cb18-33">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span>(gtools<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
@@ -1331,6 +1351,7 @@ background-color: null;
 font-style: inherit;"># this was the odds pregame for Jazz vs Warriors</span></span>
 <span id="cb18-35">    } <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> {</span>
 <span id="cb18-36">    xpath <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -1422,6 +1443,7 @@ font-style: inherit;">100</span>))</span>
 background-color: null;
 font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">probs =</span> remaining<span class="sc" style="color: #5E5E5E;
@@ -1483,9 +1505,9 @@ background-color: null;
 font-style: inherit;">remaining =</span> remaining, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">sims =</span> sims))</span>
-<span id="cb18-57">}</span></code></pre></div>
+<span id="cb18-57">}</span></code></pre></div></div>
 <p>With this function I can simplify the code and compare the results.</p>
-<div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">utah <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">utah <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1502,19 +1524,19 @@ font-style: inherit;">$</span>schedule<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>RESULT,<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"W"</span>))</span></code></pre></div>
+font-style: inherit;">"W"</span>))</span></code></pre></div></div>
 <pre><code>## [1] 50</code></pre>
-<div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">table</span>(utah<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>sims))</span></code></pre></div>
+font-style: inherit;">$</span>sims))</span></code></pre></div></div>
 <pre><code>## 
 ##      0      1      2      3      4 
 ## 0.0087 0.0856 0.3047 0.4127 0.1883</code></pre>
-<div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">phoenix <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">phoenix <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1531,15 +1553,15 @@ font-style: inherit;">$</span>schedule<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>RESULT,<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"W"</span>))</span></code></pre></div>
+font-style: inherit;">"W"</span>))</span></code></pre></div></div>
 <pre><code>## [1] 48</code></pre>
-<div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">prop.table</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">table</span>(phoenix<span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>sims))</span></code></pre></div>
+font-style: inherit;">$</span>sims))</span></code></pre></div></div>
 <pre><code>## 
 ##      0      1      2      3      4 
 ## 0.0094 0.0984 0.3198 0.4024 0.1700</code></pre>
@@ -1548,7 +1570,7 @@ font-style: inherit;">$</span>sims))</span></code></pre></div>
 <p>If Utah wins two more games then the Suns have a 0.17 chance of getting the one seed.</p>
 <p>The odds of Utah winning two or more games is 0.91 chance of getting the one seed.</p>
 <p>I can calculate the total odds of the Jazz getting the number one seed like by adding two to the Jazz total as that is the current lead. The Suns have the tiebreaker though.</p>
-<div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">adj <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">adj <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">=</span> utah<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1577,7 +1599,7 @@ font-style: inherit;">length</span>(phoenix<span class="sc" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">$</span>sims),<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span>)</span></code></pre></div>
+font-style: inherit;">2</span>)</span></code></pre></div></div>
 <pre><code>## [1] 0.89</code></pre>
 <p>The result is that the Utah Jazz have a 0.89 chance of getting the number one seed. This is pretty close to what I found <a href="https://www.deseret.com/2021/5/10/22429307/what-do-the-utah-jazz-have-left-to-do-to-get-the-no-1-seed-in-the-western-conference-nba-playoffs">elsewhere</a> and good news personally.</p>
 <p>The great thing is I can rerun this code whenever I want and it should work. Of course, that doesn’t always work as intended but at least I learn some new skills every time I encounter a problem. I’ve used R for a few years now, but I still visited eleven different stack overflow questions just to write this.</p>
@@ -1610,7 +1632,7 @@ font-style: inherit;">2</span>)</span></code></pre></div>
 </div>
 <p>The first step was to gather the photos. The more photos the better. My wife and I use Google Photos to store all of our pictures, so I searched the term <em>archaeology</em> within my photo account and used Google’s AI to make my life easier. I downloaded more than 1,000 photographs that matched this term. Not every picture was archaeology related, but it did a fairly good job. I only removed a few pictures that didn’t fit.</p>
 <p>I also use <code>tidyverse</code> which is standard for me and <code>magrittr</code>, as I like some of the pipes not included in <code>tidyverse</code>. The <code>tictoc</code> package is a great little package for keeping track of elapsed time. Base R can take care of a lot of the functions in these packages, but I find them more convenient and easier to follow. The magick package sometimes has a problem with memory management when communicating with imagemagick, but the development version of the package has an <code>image_destroy</code> function that helps.</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># libraries used</span></span>
 <span id="cb1-2">remotes<span class="sc" style="color: #5E5E5E;
@@ -1634,9 +1656,9 @@ background-color: null;
 font-style: inherit;">library</span>(magick)</span>
 <span id="cb1-7"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">library</span>(tictoc)</span></code></pre></div>
+font-style: inherit;">library</span>(tictoc)</span></code></pre></div></div>
 <p>As my photos were zipped, I used R to unzip them (why not use R for everything, right?). I use the <code>walk</code> function from <code>purrr</code> as it doesn’t return any results. I have the photos stored in a subdirectory called <em>Photos</em>.</p>
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># photos are zipped; list files and unzip them</span></span>
 <span id="cb2-2">lfZip <span class="ot" style="color: #003B4F;
@@ -1679,9 +1701,9 @@ font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'jpg'</span>, <span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">full.names =</span> T)</span></code></pre></div>
+font-style: inherit;">full.names =</span> T)</span></code></pre></div></div>
 <p>The biggest problem with the image mosaic is that all of the images have to be square. I don’t know about you, but I don’t take many square photos. <code>RsimMosaic</code> does have a <code>createTiles</code> function, but as the help file notes, the interpolation scheme does not produce high quality images. I wrote my own function to generate square tiles and again I used <code>walk</code> to save the results. The function crops photos in the middle, depending on whether it is a landscape or portrait orientation.</p>
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># create new directory to save results</span></span>
 <span id="cb3-2"><span class="fu" style="color: #4758AB;
@@ -1697,6 +1719,7 @@ font-style: inherit;"># function to create square tiles</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(.x, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
@@ -1714,6 +1737,7 @@ background-color: null;
 font-style: inherit;">%&gt;%</span> image_info</span>
 <span id="cb3-8">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span>(info<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>width <span class="sc" style="color: #5E5E5E;
@@ -1754,6 +1778,7 @@ background-color: null;
 font-style: inherit;">'Tiles'</span>))</span>
 <span id="cb3-14">  } <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> {</span>
 <span id="cb3-15">    img <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -1808,7 +1833,7 @@ background-color: null;
 font-style: inherit;">toc</span>()</span>
 <span id="cb3-28"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># 4837.13 sec elapsed</span></span></code></pre></div>
+font-style: inherit;"># 4837.13 sec elapsed</span></span></code></pre></div></div>
 <p>It took my computer 4837 seconds (<code>r round(4837 / 60,2)</code> hours) to run for all 1,486 pictures. Maybe I downloaded too many, but this is going to be a lengthy process.</p>
 <p>Here’s a comparison of two 60-pixel images, the first is from the <code>createTiles</code> function, and the second is from the custom function. <code>Magick</code> is the clear winner.</p>
 <table class="caption-top table">
@@ -1836,7 +1861,7 @@ font-style: inherit;"># 4837.13 sec elapsed</span></span></code></pre></div>
 <figcaption>Pueblo Bonito</figcaption>
 </figure>
 </div>
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">image_read</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1876,7 +1901,7 @@ background-color: null;
 font-style: inherit;">toc</span>()</span>
 <span id="cb4-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># 93.66 sec elapsed</span></span></code></pre></div>
+font-style: inherit;"># 93.66 sec elapsed</span></span></code></pre></div></div>
 <p>Note in case you run across this: When I ran this function the first time it failed. I did some investigation and determined that a handful of photos were saved with an 8 bit depth and the other were 24 bit depth. As there were only a few, I just removed them and proceeded.</p>
 <p>The result is cool if you zoom in, but doesn’t look all that great. A good way to improve the look is to overlay the original photo with a 50% opacity. I also wanted to increase the contrast. I do love Photoshop and it can easily be done that route, but I think I said something about doing it all in R, so here we go.</p>
 <p>(Warning: the following images may take a long time to load)</p>
