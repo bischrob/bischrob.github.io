@@ -21,6 +21,8 @@ format:
     css: 
       - styles.css
       - https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap
+    include-in-header:
+      - metricool.js
 
 
 
