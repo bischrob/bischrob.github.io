@@ -2,12 +2,12 @@
 title: "Can Artifacts Reveal Social Networks?"
 description: "A summary of a newly submitted paper on material culture and social network modeling."
 author: "Robert J.Bischoff"
-date: "02/21/2026"
+date: "04/16/2026"
 categories:
   - archaeology
   - network science
   - research update
-draft: true
+draft: false
 ---
 
 This is a research update on a new paper my colleague Cecilia Padilla-Iglesias and I recently submitted for peer review:
@@ -50,7 +50,7 @@ We can then test how close those two are under different conditions.
 
 ![Figure 5. Example runs show how network structure changes when groups begin with identical vs. distinct starting trait sets.](figure-5-example-networks.png)
 
-## Why this matters
+## Conclusion
 
 This gives archaeologists a practical caution: network methods are powerful, but interpretation depends heavily on how traits form, spread, and are observed. In other words, artifact similarity is informative, but not a one-to-one map of social life.
 
