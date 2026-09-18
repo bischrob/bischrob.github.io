@@ -1,6 +1,13 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
+    - posts.qmd
+    - projects.qmd
+    - dissertation-story-map.qmd
+    - about.qmd
+    - posts/**/*.qmd
 
 website:
   title: "Robert J. Bischoff"
@@ -8,6 +15,9 @@ website:
   description: "Robert J. Bischoff's personal website and blog containing posts on archaeology, R, and data science."
   navbar:
     right:
+      - posts.qmd
+      - projects.qmd
+      - dissertation-story-map.qmd
       - about.qmd
       - icon: github
         href: https://github.com/bischrob

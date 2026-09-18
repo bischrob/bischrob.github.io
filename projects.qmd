@@ -1,0 +1,44 @@
+---
+title: "Projects"
+description: "Computational archaeology projects in data integration, network analysis, digital databases, and archaeological visualization."
+page-layout: full
+title-block-banner: false
+---
+
+<div class="projects-layout">
+<aside class="project-index-grid" aria-label="Projects navigation">
+<a href="#catmapper"><span>01</span><strong>CatMapper</strong><small>Data integration</small></a>
+<a href="#dissertation"><span>02</span><strong>Dissertation</strong><small>Networks &amp; material culture</small></a>
+<a href="#heurist"><span>03</span><strong>Heurist</strong><small>Open research databases</small></a>
+<a href="#archaeodash"><span>04</span><strong>ArchaeoDash</strong><small>Compositional analysis</small></a>
+</aside>
+<main class="project-content">
+<div class="projects-intro">
+<div class="projects-intro-hero"><div class="projects-intro-copy"><p class="eyebrow">/ SELECTED WORK</p>
+<h1>Tools for connecting<br><span>archaeological evidence.</span></h1>
+<p>My project work sits between archaeology, software, and research infrastructure: building ways to connect datasets, test archaeological interpretations, and make analytical tools more accessible.</p></div><img class="projects-intro-art" src="images/projects-intro-art.webp" alt="Abstract computational archaeology illustration" loading="eager" decoding="async"></div>
+</div>
+
+<section id="catmapper" class="project-feature">
+<div class="project-feature-copy"><p class="eyebrow">01 / DATA INTEGRATION</p><h2>CatMapper</h2><p class="project-lede">A family of web applications for making categories comparable across complex datasets.</p><p>Different datasets often describe the same people, places, languages, religions, or artifacts with different names and codes. CatMapper helps researchers explore those categories, translate new data, build bridges between datasets, and document the decisions behind their work.</p><p>The platform includes SocioMap for sociopolitical categories and ArchaMap for archaeological artifact types. I was the primary developer for the applications, wrote the code, and managed the database while working with collaborators at Arizona State University and beyond.</p><div class="project-links"><a class="btn btn-primary" href="https://catmapper.org/" target="_blank" rel="noopener">Visit CatMapper <span>↗</span></a><a class="text-link" href="https://shesc.asu.edu/research/projects/catmapper" target="_blank" rel="noopener">Read about it →</a><a class="text-link" href="https://news.asu.edu/20230825-asu-team-receives-half-million-dollar-nsf-grant-webbased-data-categorization-app" target="_blank" rel="noopener">ASU News →</a></div></div>
+<figure class="project-visual"><a href="images/catmapper-search.jpg" target="_blank" rel="noopener"><img src="images/catmapper-search-thumb.webp" alt="CatMapper search interface showing a category search page and contextual results"></a><figcaption>CatMapper search interface · Image courtesy of the CatMapper team / ASU News · <a href="images/catmapper-search.jpg" target="_blank" rel="noopener">View full size</a></figcaption></figure>
+</section>
+
+<section id="dissertation" class="project-feature project-feature-reverse">
+<div class="project-feature-copy"><p class="eyebrow">02 / DISSERTATION RESEARCH</p><h2>Material culture<br>and social networks</h2><p class="project-lede">Evaluating how archaeological evidence can—and cannot—stand in for past social relationships.</p><p>My dissertation examines the relationship between interaction networks and the material-culture patterns archaeologists use to model them. It asks when similarities in objects, styles, technologies, or sources provide useful evidence about interaction—and when those proxies distort the social worlds they are meant to represent.</p><p>The research combines network science with agent-based modeling, GIS, geometric morphometrics, and machine learning across case studies in the U.S. Southwest.</p><div class="project-links"><a class="btn btn-primary" href="/Dissertation/">Read the dissertation <span>↗</span></a></div></div>
+<figure class="project-visual dissertation-visual"><a href="images/dissertation-logo.webp" target="_blank" rel="noopener"><img src="images/dissertation-logo.webp" alt="Dissertation research logo representing material networks and social interaction in the American Southwest"></a><figcaption>Dissertation research · <a href="images/dissertation-logo.webp" target="_blank" rel="noopener">View full size</a></figcaption></figure>
+</section>
+
+<section id="heurist" class="project-feature heurist-feature">
+<div class="project-feature-copy"><p class="eyebrow">03 / OPEN RESEARCH DATABASES</p><h2>Heurist</h2><p class="project-lede">A flexible, open-source database for research that needs relationships, context, and public access.</p><p>I use Heurist for my dissertation research and for the repository database at the Center for Archaeology and Society. Its linked-record approach makes it useful for connecting people, places, objects, documents, and research events without forcing every project into the same schema.</p><p>I have also begun contributing to the Heurist codebase. If you are considering Heurist for your own research, repository, or public humanities project, <a href="mailto:rbischoff@asu.edu">contact me</a>—I’d be happy to discuss possible workflows and database designs.</p><div class="project-links"><a class="btn btn-primary" href="https://heurist.huma-num.fr/heurist?db=rbisc_dissertation&amp;website=7920" target="_blank" rel="noopener">Open the dissertation database <span>↗</span></a></div></div>
+<a class="story-map-card" href="dissertation-story-map.html"><img src="images/dissertation-story-map-preview.webp" alt="Preview of the Dissertation Story Map showing an interactive research story about gendered networks in the American Southwest"><span>Open Dissertation Story Map <b>↗</b></span></a>
+</section>
+
+<section id="archaeodash" class="project-feature project-feature-reverse archaeodash-feature">
+<figure class="project-visual archaeodash-visual"><a href="images/archaeodash-homepage.webp" target="_blank" rel="noopener"><img src="images/archaeodash-homepage-thumb.webp" alt="ArchaeoDash homepage showing tabs for dataset management, visualization, ordination, clustering, and probability analysis" loading="lazy" decoding="async"></a><figcaption>ArchaeoDash homepage · Screenshot captured from the public application · <a href="images/archaeodash-homepage.webp" target="_blank" rel="noopener">View full size</a></figcaption></figure>
+<div class="project-feature-copy"><p class="eyebrow">04 / ANALYTICAL DASHBOARD</p><h2>ArchaeoDash</h2><p class="project-lede">An open-source dashboard for exploring archaeological compositional data.</p><p>ArchaeoDash is a user-friendly web application for statistical analysis and visualization of geochemical compositional data from archaeological materials. It supports neutron activation analysis and X-ray fluorescence workflows, with tools for data preparation, exploratory visualization, PCA, LDA, clustering, group membership, distances, and export.</p><p>The application is hosted by the Center for Archaeology and Society at ASU and is available for public beta testing. The code is open source under the MIT license.</p><div class="project-links"><a class="btn btn-primary" href="https://cas.rc.asu.edu/app/Archaeodash/" target="_blank" rel="noopener">Open ArchaeoDash <span>↗</span></a><a class="text-link" href="https://github.com/Center-for-Archaeology-and-Society/Archaeodash" target="_blank" rel="noopener">View the source code →</a></div></div>
+</section>
+
+<section class="project-sources"><p class="eyebrow">/ PROJECT LINKS &amp; SOURCES</p><p><a href="https://news.asu.edu/20230825-asu-team-receives-half-million-dollar-nsf-grant-webbased-data-categorization-app" target="_blank" rel="noopener">ASU News: CatMapper and the NSF grant</a> · <a href="https://catmapper.org/" target="_blank" rel="noopener">CatMapper</a> · <a href="/Dissertation/">Dissertation</a> · <a href="https://cas.rc.asu.edu/app/Archaeodash/" target="_blank" rel="noopener">ArchaeoDash</a> · <a href="https://github.com/Center-for-Archaeology-and-Society/Archaeodash" target="_blank" rel="noopener">ArchaeoDash on GitHub</a></p></section>
+</main>
+</div>

@@ -17,5 +17,25 @@
       "/posts/Size 3D Models in Blender/post.html",
       "/posts/Pilling Figurines 3D Models/post.html"
     ]
+  },
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/Artifacts-and-Social-Networks-Submitted-Paper/post.html",
+      "/posts/PhD-Dissertation-Update/post.html",
+      "/posts/Blog Update/post.html",
+      "/posts/Managing-Hanging-R-Code/post.html",
+      "/posts/Automated-Netlogo_Flowcharts_in_R/post.html",
+      "/posts/UseR-Conference-Shiny-Presentation/post.html",
+      "/posts/Getting-my-Powerpoint-Online/post.html",
+      "/posts/Easy-GitHub-Pages-Website/post.html",
+      "/posts/Artifact-Photogrammetry-Basics/post.html",
+      "/posts/Academic-Reading-on-the-Go/post.html",
+      "/posts/why-I-like-R/post.html",
+      "/posts/Making-Image-Mosaics-in-R/post.html",
+      "/posts/Automatic-Background-Removal-for-Photogrammetry/post.html",
+      "/posts/Size 3D Models in Blender/post.html",
+      "/posts/Pilling Figurines 3D Models/post.html"
+    ]
   }
 ]

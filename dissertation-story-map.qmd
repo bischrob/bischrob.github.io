@@ -1,0 +1,14 @@
+---
+title: "Dissertation Story Map"
+description: "Interactive story map for Robert Bischoff's dissertation research on networks in the American Southwest."
+page-layout: full
+title-block-banner: false
+---
+
+<div class="story-map-page">
+<p class="eyebrow">/ INTERACTIVE RESEARCH STORY</p>
+<h1>Dissertation Story Map</h1>
+<p class="story-map-lede">Explore the evidence, places, and network comparisons behind my dissertation research.</p>
+<div class="story-map-frame"><iframe title="Dissertation Story Map" src="https://heurist.huma-num.fr/heurist?db=rbisc_dissertation&amp;website=7920&amp;pageid=60204" loading="lazy"></iframe></div>
+<p class="story-map-note"><a href="https://heurist.huma-num.fr/heurist?db=rbisc_dissertation&amp;website=7920&amp;pageid=60204" target="_blank" rel="noopener">Open the story map in a new tab ↗</a></p>
+</div>
